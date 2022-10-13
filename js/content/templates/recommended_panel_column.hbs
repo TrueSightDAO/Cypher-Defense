@@ -1,0 +1,16 @@
+<label class="recommended-label">
+  <div class="recommendation-col_name">
+    {{col_name}}
+  </div>
+  <div class="recommendation-counter">
+    {{counter}}
+  </div>  
+  {{#if selected}}
+    <input class="recommend-checkbox" type="checkbox" checked="checked" ></input>
+  {{else}}
+    <input class="recommend-checkbox" type="checkbox"></input>
+  {{/if}}
+
+  <span class="checkmark"></span>
+</label>
+

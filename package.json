@@ -1,0 +1,15 @@
+{
+  "author": "Gary Teh <garyjob@gmail.com>",
+  "name": "krake-chrome",
+  "main": "./js/",
+  "version": "0.13.1",
+  "private": true,
+  "engines": {
+    "node": "=0.8.8"
+  },
+  "dependencies": {
+    "ejs": "0.6.1",
+    "express": "2.5.7",
+    "pryjs": "^1.0.3"
+  }
+}

@@ -1,0 +1,81 @@
+#popup_header {
+  height: 24px;
+  padding-top: 16px;
+  box-sizing: content-box !important;
+  background: rgb(19, 19, 19);
+  border-radius: 4px 4px 0px 0px;
+  text-align: center;
+}
+
+#logo-icon {
+  display: table;
+  pointer-events: none;
+  outline: none;
+
+}
+
+h3 {
+  display: inline-block; 
+}
+
+#data_source_link {
+  display: inline-block; 
+  margin-left: 5px;
+  color: black;
+  line-height: 20px;
+  font-size: 20px;
+}
+
+.clearer {
+  clear:both;
+}
+
+.header_separation {
+  height: 20px;
+}
+
+#popup_body {
+  padding: 10px;
+}
+
+pre#recipe {
+    overflow-x: scroll;
+}
+
+#data-harvested {
+  padding: 10px;
+}
+
+#final_results_holder {
+  overflow-y: scroll;
+  overflow-x: scroll;
+  height: 400px;
+  margin-top: 20px;
+  border-radius: 10px;
+  -moz-box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.2);
+  -webkit-box-shadow: 0px 2px 15px rgb(0 0 0 / 20%);
+  box-shadow: 0px 2px 15px rgb(0 0 0 / 20%);  
+}
+
+#final_results {
+  font-size: 14px;
+}
+
+.alignright {
+  text-align: right;
+}
+
+#empty_message, #fresh_message {
+  padding: 30px;
+  text-align: center;
+}
+
+img.loading-gif {  
+  border-radius: 30px;
+  width: 200px;
+  height: 130px;  
+}
+
+#count_holder {
+  line-height: 30px;
+}
