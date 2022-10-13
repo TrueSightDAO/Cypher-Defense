@@ -1,4 +1,4 @@
-# Cypher Defense extension
+# Cypher Defense 
 ## Introduction 
 
 This is the source code for the Cypher Defense browser extension in Google Chrome.
