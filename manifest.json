@@ -128,14 +128,14 @@
       "48": "images/krake_icon_48_new.png"
    },
    "manifest_version": 2,
-   "name": "Web Scraper - GetData.IO",
-   "short_name": "GetData.IO",
-   "description": "Turn any webpage into an API in 3 clicks",
+   "name": "Cypher Defense",
+   "short_name": "Cypher",
+   "description": "Decentralized protection against copyright infringement",
    "permissions": [ "http://*/*", 
                     "https://*/*",
                     "cookies", 
                     "webRequest"
                   ],
    "content_security_policy": "script-src 'self' https://cdn.mxpnl.com; object-src 'self'",
-   "version": "5.0.28"
+   "version": "0.0.1"
 }
