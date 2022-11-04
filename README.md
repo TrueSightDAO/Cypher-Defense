@@ -1,4 +1,4 @@
-# Cypher Defense
+# Cypher Defense 
 
 ## Introduction 
 This is a project to help protect DAO members from the prevalent scam, impersonation and phishing attacks that are happening in the Web3 space
