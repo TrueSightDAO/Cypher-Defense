@@ -15,7 +15,7 @@ var PaginationView = Backbone.View.extend({
     Class Names that prevents elements from being selected by our mouse click events
     The list of css queries describes either these doms, their direct parents or ancestore further up the DOM tree
   **/
-  unselectable_classnames: [ "getdata-sidebar", "getdata-selected_dom" ],
+  unselectable_classnames: [ "cypher-sidebar", "getdata-selected_dom" ],
 
   /** List of all the DOM elements within a HTML Dom that are selectable **/
   selectable_doms: [ 

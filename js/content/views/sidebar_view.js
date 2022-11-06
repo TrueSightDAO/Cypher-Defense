@@ -1,6 +1,6 @@
 var SideBarView = Backbone.View.extend({
 
-  className: "getdata-sidebar",
+  className: "cypher-sidebar",
 
   events : {    
     "click #add_columns": "addColumnEvent",
