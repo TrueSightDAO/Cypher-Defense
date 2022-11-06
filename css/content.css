@@ -37,10 +37,11 @@
 
 .getdata-sidebar #getdata-header #extension-name {
   height: 9px;
-  width: 72px;
+  width: 320px;
   float: left;
-  margin-left: 96px;
+  margin-left: 0px;
   margin-top: 16px;
+  text-align: center;
   
 }
 
@@ -987,22 +988,22 @@
 
 /** Empty panel section **/
 .getdata-sidebar .empty-panel .empty-icon {
-  margin-left: 115px;
+  margin-left: 98px;
   margin-top: 120px;  
   margin-bottom: 50px;
-  width: 90px;
-  height: 70px;  
+  width: 128px;
+  height: 128px;  
 
-  background-image: url("chrome-extension://__MSG_@@extension_id__/images/empty-state.svg");  
+  background-image: url("chrome-extension://__MSG_@@extension_id__/images/cypher_icon_128_warning.png");  
 }
 
 .getdata-sidebar .empty-panel.is-first .empty-icon {
-  margin-left: 115px;
+  margin-left: 98px;
   margin-top: 120px; 
   margin-bottom: 50px; 
-  width: 90px;
-  height: 70px;  
-  background-image: url("chrome-extension://__MSG_@@extension_id__/images/empty-state-first.svg");  
+  width: 128px;
+  height: 128px;  
+  background-image: url("chrome-extension://__MSG_@@extension_id__/images/cypher_icon_128_warning.png");  
 }
 
 .getdata-sidebar .empty-panel .empty-header {

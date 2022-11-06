@@ -73,7 +73,7 @@ Env.fetchTabById = function(tab_id, callback) {
 Env.fetchCurrentTab = function(callback) {
   chrome.tabs.query({
       active: true,
-      lastFocusedWindow: true
+      currentWindow: true
   }, function(tabs) {
       var tab = tabs[0];
       callback(tab);

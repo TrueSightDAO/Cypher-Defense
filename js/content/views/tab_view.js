@@ -105,7 +105,7 @@ var TabView = Backbone.View.extend({
     var self = this;
 
     self.render();    
-    self.respondToPageChanges();      
+    // self.respondToPageChanges();      
 
     if(!self.isRendered) { // prevents double binding issue within subviews
       self.load().then(

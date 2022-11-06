@@ -1,145 +1,29 @@
 <div id='getdata-header'>
-  {{{img "images/help-circle.svg" "help-icon" "help-icon" }}}
   <div id='extension-name'>
-    {{{img "images/logo-long.svg" "logo-icon" "logo-icon" }}}
-  </div>
-  {{{img "images/menu-close-icon.svg" "close-icon" "close-icon" }}}
-</div>
-
-<div id='getdata-notification-popup-positioner'>
-  
-</div>
-
-<div id='tab-panel'>
-  <div id='manual_selection_tab' class='tab active'>Make Your Own</div>
-  <div id='recommended_column_tab' class='tab'>
-    Recommendations
-    <span id='column_rec_num'>0</span>
+  Cypher Defense
   </div>
 </div>
 
-<div class='loading-panel'>
-
-  <div class='loading-icon'>
-    {{{img "images/loading-icon.gif"  "loading-gif" }}}
-  </div>  
-  <div class='loading-header'>
-    Please wait while we load...
-  </div>
-  <div class='loading-subheader'>
-    {{loading_message}}  
-  </div>  
-
-
-</div>
+<div id='getdata-notification-popup-positioner'></div>
 
 
 <div class='empty-panel'>
-
   <div class='empty-icon'></div>
   <div class='empty-header'>
-    Select data for <span id='column_number'></span> column  
+    Page interaction has been disabled
   </div>
   <div class='empty-subheader'>
-    Data items will be highlighted on hover.    
+    Known Web3 related phishing attack / scam has been detected on this page by network
   </div>
   
 
 </div>
 
-<div class='detailed-panel'>
-  <div class='detailed-panel-top'>
-    {{{img "images/active-state.svg" "detailed-panel-icon" "detailed-panel-icon" }}}
-    <div class='detailed-panel-top-header'><span id='data_items_count'>X</span> data items selected</div>
-    <div class='detailed-panel-top-subheader'>
-      Tag similar data items if there are more or name column and save
-    </div>
-  </div>
-  <div class='detailed-panel-bottom'>
-    <div id='col_name_holder'>
-      <div id="curr_col_name" contenteditable="true"></div>
-    </div>
 
-    <div id='required_attribute_holder'>
-      <select id="required_attribute">
-        <option value="inner_text">Get the Text</option>
-        <option value="href">Get the URL of this Hyperlink</option>
-        <option value="src">Get the Image location</option>
-        <option value="inner_html">Get the raw HTML</option>
-      </select>
-    </div>    
-
-    <div class='detailed-panel-sample-data'>
-      <div class='detailed-panel-sample-data-content' id='sample-data'>
-        Some sample content to be replaced
-      </div>
-    </div>
-
-    <div class='detailed-panel-actions'>
-      <div id='reset_column' class="">Reset</div>
-
-      <div id='add_columns' 
-            data-toggle="tooltip"
-            tooltip-content="Save column and create the next column"
-            class="">Save</div>
-    </div>
-  </div>
-</div>
-
-<div id='column-recommendations-panel'>
-  {{{img "images/recommendations-state.svg" "recommendations-panel-icon" "recommendations-panel-icon" }}}
-  <div id='column-recommendations-header'>
-    Recommendations found
-  </div>
-  <div id="column-recommendations-subheader">
-    Contributions by our community. <br>Feel free to include them.
-  </div>
-  <div id="column-recommendations-listings"></div>
-</div>
-
-<div id='selection_holder'>
-  <div id='columns'></div>
-  <div class="activate_listing_mode"></div>
-</div>
-
-<div class='listings-header'>
-  <div id="listing_header_title">SELECTION HISTORY</div>
-  <div class="deactivate_listing_mode"></div>
-</div>
-<div class='listings-panel' id="listings-panel">
-</div>
 
 <div class="clearer"></div>
 
 <div id='getdata-footer'>
-
-  <div class='add_button_holder'>
-    <div  id="add_pagination" 
-      data-toggle="tooltip"
-      tooltip-content="If there is a 'next page' hyperlink, add it to this data source"
-      class="getdata-sidebar-button">
-      <div id="add_pagination_icon"></div>  
-    </div>
-  </div>      
-
-
-  <div id='save_holder' 
-        data-toggle="tooltip" 
-        tooltip-content="Create your crawler"
-        >
-      
-      <div 
-        class="create-text"
-        data-toggle="tooltip" 
-        tooltip-content="Create your crawler"
-      >
-        Get Data
-      </div>
-      <div class="create-icon"></div>
-  </div>
-
-
-  <div id='community_holder'></div>
 </div>
 
 

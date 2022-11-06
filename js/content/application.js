@@ -43,15 +43,7 @@ Application.init = function() {
     // TODO: load all asynchronously
     Application.loadHandleBarTemplates(Application.handleBarTemplatesLoaded);
     Env.registerListener(Application.msgEvent);
-
-  // When on create new Krake page
-  } else if(Application.shouldInjectDefinition()) {
-    Application.injectDefinition();
-
-  // When on page to trigger new Krake creation
-  } else if(Application.shouldTriggerCreation()) {
-    Application.triggerDataSourceCreation();
-  }
+  } 
 }
 
 /**
@@ -162,11 +154,8 @@ Application.handleBarTemplatesLoaded = function() {
 Application.renderTabView = function() {
   console.log("Rendering Tab View");
   Application.tab_view = new TabView();  
-  if(Application.shouldStartTutorialView()) {
-    Application.tab_view.render();
-  }
 
-  if(Application.to_activate) {
+  if(Application.should_block) {
     Application.activate();
   }
 }
@@ -190,6 +179,12 @@ Application.activate = function() {
     });    
   }
   
+}
+
+Application.activateBlocking = function() {
+  Application.should_block = true;
+  // Application.tab_view = Application.tab_view || new TabView();  
+  // Application.tab_view.render();
 }
 
 /** 
@@ -218,10 +213,18 @@ Application.loadHandleBarTemplates = function(callback) {
     } else {
       console.log((Date.now() - Application.sessionStartTime) + " : loaded all handle bar templates");
       callback && callback();
-
+      
     }
-    
   });
+}
+
+Application.getInfo = function(payload, callback) {
+  response = {};
+  response.status = "success";
+  response.data = {
+    url: window.location
+  }
+  callback && callback(response);
 }
 
 Application.gatherData = function(payload, callback) {
