@@ -1,10 +1,18 @@
+#popup_doc {
+  width: 300px;
+  height: 300px;
+}
+
 #popup_header {
   height: 24px;
-  padding-top: 16px;
+  padding-top: 15px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  line-height: 14px;
   box-sizing: content-box !important;
   background: rgb(19, 19, 19);
-  border-radius: 4px 4px 0px 0px;
   text-align: center;
+  color: #fff;
 }
 
 #logo-icon {
@@ -12,6 +20,79 @@
   pointer-events: none;
   outline: none;
 
+}
+
+#logo_holder {
+  text-align: center;
+  margin-bottom: 20px;
+  margin-top: 40px;
+}
+
+#main_logo {
+  border-radius: 20px;
+}
+
+
+
+#deactive {
+  text-align: center;
+}
+
+#deactive .profile_image {
+  width: 25px;
+  border-radius: 25px;
+}
+
+#deactive .status_label {
+  width: 50px;
+  display: inline-block;
+  font-size: 8px;
+}
+
+#deactive .section_title {
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+#deactive .button-holder {
+  padding: 10px;
+  text-align: center;
+
+}
+
+#deactive .span4 {
+  margin-bottom: 10px;
+}
+
+
+
+
+
+#blacklisted .profile_image {
+  width: 25px;
+  border-radius: 25px;
+}
+
+#blacklisted .status_label {
+  width: 50px;
+  display: inline-block;
+  font-size: 8px;
+}
+
+#blacklisted .content {
+  width: 200px;
+  background: #ccc;
+  padding: 10px;
+  display: inline-block;
+}
+
+#blacklisted .span4 {
+  margin-bottom: 10px;
+}
+
+#blacklisted .span4.section_title {
+  font-size: 20px;
+  margin-bottom: 20px;
 }
 
 h3 {

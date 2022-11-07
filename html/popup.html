@@ -1,15 +1,42 @@
 <html>
-  <body>
+  <body id="popup_doc">
     <div id="popup_header">
-      <img src="/images/logo-long.svg" id="logo">
+      Cypher Defense
     </div>
     <div id="popup_body">
 
-      <div class="row">
-        <div class="span7">
-          <a href='#' id="data_source_link" target="_blank">       
-            <h3>Gathered Data</h3>    
-          </a>                      
+      <div id="logo_holder">
+        <img src="/images/cypher_icon_128_warning.png" id="main_logo">  
+      </div>
+      
+
+      <div class="options" id="deactive">
+        <div class="section_title">
+          See something suspicious about this page?
+        </div>        
+        <div class="button-holder">
+          <a href="" class="content btn-large btn-danger" target="_blank" id="flag_button">
+            Flag this page
+          </a>
+          
+        </div>
+      </div>
+
+      <div class="row options" id="blacklisted">
+        <div class="span4 section_title">
+          This site has been blacklisted
+        </div>
+        <div class="span4">
+          <div class="status_label">Flagged by </div>
+          <div class="content">
+            <img id="blacklist_flagger_profile" class="profile_image"> <span id="blacklist_flagger_name"></span>
+          </div>
+        </div>
+        <div class="span4">
+          <div class="status_label">Confirmed by</div> 
+          <div class="content">
+            <img id="blacklist_validator_profile" class="profile_image"> <span id="blacklist_validator_name"></span>
+          </div> 
         </div>
         <div class="span2 alignright">
           <a href='https://www.facebook.com/GetData.IO' target="_blank">       

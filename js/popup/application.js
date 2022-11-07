@@ -38,7 +38,37 @@ Application.fetchRecipe = function() {
       Application.fetchData(response.data.definition);
     }
 
-  });
+    // Sends request to background page
+    Env.sendMessageToBackground( payload, function(response) {
+
+      switch(response["status"]) {
+        case "blacklisted":
+          $("#blacklisted").show();
+          $("#blacklisted #blacklist_flagger_name").html(response["flagger"]["name"]);
+          $("#blacklisted #blacklist_flagger_profile").attr("src", response["flagger"]["avatar_url"]);
+
+          $("#blacklisted #blacklist_validator_name").html(response["validator"]["name"]);
+          $("#blacklisted #blacklist_validator_profile").attr("src", response["validator"]["avatar_url"]);
+
+          $("#validated").hide();
+          $("#deactive").hide();
+          break;
+
+        case "verified":
+        $("#blacklisted").hide();
+          $("#validated").show();
+          $("#deactive").hide();
+          break;
+
+        default:
+          $("#flag_button").attr("href", "https://truesight.me/domains/flag?domain=" + tab.url);
+
+          $("#blacklisted").hide();
+          $("#validated").hide();
+          $("#deactive").show();
+      }
+    });
+  });  
   
 }
 
