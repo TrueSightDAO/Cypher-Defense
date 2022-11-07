@@ -1,10 +1,7 @@
 var Application = {};
 
 Application.init = function() {
-  Application.tab_id = Application.targetTabId();
-  Application.page_id = Application.targetPageId();
-  Application.popup_view = new PoupupView({ page_id: Application.page_id, tab_id: Application.tab_id });
-
+  Application.fetchTabInfo();
 }
 
 Application.targetTabId = function() {
@@ -22,23 +19,40 @@ Application.targetPageId = function() {
   }
 }
 
-Application.fetchRecipe = function() {
-  var page_id = Application.targetPageId();
-  var payload = { 
-    controller: "ktab",
-    method: 'compile',
-    args_array: [{
-      page_id: page_id
-    }]
-  }
+Application.fetchTabInfo = function() {
 
-  // Sends request to background page
-  Env.sendMessageToBackground( payload, function(response) {
-    if(response.status == "success") {
-      Application.fetchData(response.data.definition);
+  Env.fetchCurrentTab(function(tab) {
+    var payload = { 
+      controller: "cypher",
+      method: 'info',
+      args_array: [{
+        url: tab.url
+      }]
     }
 
-  });
+    // Sends request to background page
+    Env.sendMessageToBackground( payload, function(response) {
+
+      switch(response["status"]) {
+        case "blacklisted":
+          $("#blacklisted").show();
+          $("#validated").hide();
+          $("#deactive").hide();
+          break;
+
+        case "verified":
+        $("#blacklisted").hide();
+          $("#validated").show();
+          $("#deactive").hide();
+          break;
+
+        default:
+          $("#blacklisted").hide();
+          $("#validated").hide();
+          $("#deactive").show();
+      }
+    });
+  });  
   
 }
 

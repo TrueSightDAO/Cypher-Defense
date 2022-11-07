@@ -47,11 +47,15 @@
   } ],  
   "background": {
       "scripts": [ 
+        "blacklist/domains.js",   
+        "blacklist/people.js",   
+        "blacklist/urls.js",           
         "js/lib/jquery_1.9.1.min.js",      
         "js/background/browsers/chrome.js",      
         "js/config/config.js",
         "js/lib/mixpanel.js",
         "js/lib/json_format.js",
+        "js/background/models/domain.js",
         "js/background/models/kcookie.js",
         "js/background/models/kcolumn.js",
         "js/background/models/kpagination.js",
@@ -60,6 +64,7 @@
         "js/background/models/krecommended_column.js",
         "js/background/models/krecommended_column_selected.js",
         "js/background/views/browser_icon_view.js",
+        "js/background/controllers/cypher_controller.js",                
         "js/background/controllers/crawler_controller.js",                
         "js/background/controllers/tutorial_controller.js",        
         "js/background/controllers/mix_panel_controller.js",
@@ -72,8 +77,9 @@
       ]
   },
   "browser_action": {
-      "default_icon": "images/krake_icon_disabled_24_new.png",
-      "default_title": "Get Data"
+      "default_icon": "images/cypher_icon_24_disabled.png",
+      "default_title": "Cypher Defense",
+      "default_popup": "html/popup.html"
   },
   "web_accessible_resources": [
     "js/content/templates/sidebar.hbs",
@@ -85,6 +91,8 @@
     "js/content/templates/introduction_modal.hbs",
     "js/content/templates/notification_panel.hbs",
     "js/content/templates/notification_save_panel.hbs",
+    "images/cypher_icon_16_warning.png",
+    "images/cypher_icon_128_warning.png",
     "images/logo-long.svg",
     "images/logo-a.png",
     "images/active-state.svg",
@@ -121,16 +129,16 @@
     "css/font-awesome-4.2.0/fonts/FontAwesome.otf"    
   ],
    "icons": {
-      "128": "images/krake_icon_128_new.png",
-      "16": "images/krake_icon_16_new.png",
-      "24": "images/krake_icon_24_new.png",
-      "32": "images/krake_icon_32_new.png",
-      "48": "images/krake_icon_48_new.png"
+      "128": "images/cypher_icon_128_warning.png",
+      "16": "images/cypher_icon_16_warning.png",
+      "24": "images/cypher_icon_24_warning.png",
+      "32": "images/cypher_icon_32_warning.png",
+      "48": "images/cypher_icon_48_warning.png"
    },
    "manifest_version": 2,
    "name": "Cypher Defense",
    "short_name": "Cypher",
-   "description": "Decentralized protection against copyright infringement",
+   "description": "Decentralized protection against web3 scams and phishing attacks",
    "permissions": [ "http://*/*", 
                     "https://*/*",
                     "cookies", 

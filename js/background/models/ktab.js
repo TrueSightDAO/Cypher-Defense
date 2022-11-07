@@ -90,7 +90,6 @@ KTab.prototype.triggerGetData = function() {
 }
 
 KTab.prototype.refreshRecommendations = function() {
-  console.log("refreshing recommendations");
   var self    = this;
   Env.sendMessage(self.id, { method: "refreshRecommendations" }, function() {});
 }

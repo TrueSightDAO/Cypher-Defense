@@ -1,6 +1,6 @@
 var SideBarView = Backbone.View.extend({
 
-  className: "getdata-sidebar",
+  className: "cypher-sidebar",
 
   events : {    
     "click #add_columns": "addColumnEvent",
@@ -88,6 +88,7 @@ var SideBarView = Backbone.View.extend({
   },
 
   render: function() {
+
     console.log((Date.now() - Application.sessionStartTime) + " : rendering sidebar view");        
     var self = this;
     var template = self.template();
@@ -99,12 +100,12 @@ var SideBarView = Backbone.View.extend({
       show_datasource_recommendations: self.parent_tab.tab.attributes.datasource_count > 0,
       loading_message: self.loadingMessage()
     }));
-    self.displayCommunity();
-    self.renderDisplayMode();
-    self.renderPaginationSection();
-    self.onResize();
-    self.monitorAndRefreshColumnCounts();
-    console.log((Date.now() - Application.sessionStartTime) + " : rendered sidebar view");    
+    // self.displayCommunity();
+    // self.renderDisplayMode();
+    // self.renderPaginationSection();
+    // self.onResize();
+    // self.monitorAndRefreshColumnCounts();
+    // console.log((Date.now() - Application.sessionStartTime) + " : rendered sidebar view");    
     return self;
   },
 

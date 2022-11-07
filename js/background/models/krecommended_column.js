@@ -90,7 +90,7 @@ KRecommendedColumn.syncRecommendedColumns = function(domain_name, hard_refresh) 
     var refresh_key = new Date().getDate();
   }
   
-  
+  return
   if(!Application.public_count) {
     console.log("public count not loaded yet");
     Application.loadPublicCountCache().then(function() {
