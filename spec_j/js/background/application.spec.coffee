@@ -37,7 +37,7 @@ describe "Application", ->
     it "should activate ", ->
       Application.iconEvent { id: @tab_id }
       kwin = new KTab @tab_id
-      expect(BrowserIconView.activate).toHaveBeenCalled()
+      expect(BrowserIconView.blacklisted).toHaveBeenCalled()
       expect(kwin.isActive()).toBe true
 
   describe "tabEvent", ->
@@ -46,7 +46,7 @@ describe "Application", ->
       kwin = new KTab @tab_id  
       kwin.activate()
       Application.tabEvent { tabId: @tab_id }
-      expect(BrowserIconView.activate).toHaveBeenCalled()
+      expect(BrowserIconView.blacklisted).toHaveBeenCalled()
 
     it "should activate", ->
       Application.tabEvent { tabId: @tab_id }
@@ -58,7 +58,7 @@ describe "Application", ->
       kwin = new KTab @tab_id  
       kwin.activate()
       Application.refreshEvent {}, {}, { id: @tab_id }
-      expect(BrowserIconView.activate).toHaveBeenCalled()
+      expect(BrowserIconView.blacklisted).toHaveBeenCalled()
 
     it "should activate", ->
       Application.refreshEvent {}, {}, { id: @tab_id }

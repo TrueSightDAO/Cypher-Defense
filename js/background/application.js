@@ -10,6 +10,7 @@ try { var KPageController               = require('./controllers/kpage_controlle
 try { var KPaginationController         = require('./controllers/kpagination_controller'); } catch(e) {}
 try { var TutorialController            = require('./controllers/tutorial_controller'); } catch(e) {}
 try { var CrawlerController             = require('./controllers/crawler_controller'); } catch(e) {}
+try { var CypherController              = require('./controllers/cypher_controller'); } catch(e) {}
 
 var Application = {};
 
@@ -21,7 +22,8 @@ Application.msg_controllers = {
   kpagination:          KPaginationController,
   krecommended_columns: KRecommendedColumnsController,
   tutorial:             TutorialController,
-  crawler:              CrawlerController
+  crawler:              CrawlerController,
+  cypher:               CypherController
 };
 
 /**
@@ -76,32 +78,37 @@ Application.iconEvent = function(tab) {
   var tab_id = tab.id;
   var kwin = new KTab(tab_id);
   
-  if(kwin.isActive()) {
-    kwin.deactivate();
-    BrowserIconView.deactivate();
-    Application.msg_controllers.mixpanel.trackExtensionDeactivation();
+  // if(kwin.isActive()) {
+  //   kwin.deactivate();
+  //   BrowserIconView.deactivate();
+  //   Application.msg_controllers.mixpanel.trackExtensionDeactivation();
 
-  } else {
-    kwin.activate();
-    BrowserIconView.activate();
-    Application.msg_controllers.mixpanel.trackExtensionActivation();  
+  // } else {
+  //   kwin.activate();
+  //   BrowserIconView.blacklisted();
+  //   Application.msg_controllers.mixpanel.trackExtensionActivation();  
     
-  }
+  // }
 };
 
 /** Called when user clicks to activate another window in the browser **/
 Application.tabEvent = function(action_info) {
   var tab_id = action_info.tabId;
-  var kwin = new KTab(tab_id);  
-  if(kwin.isActive()) BrowserIconView.activate();
-  else BrowserIconView.deactivate();
 
   Env.fetchTabById(tab_id, function(tab) {
-    Application.syncDomainRecommendations(tab)
-      .then(Application.setBadgeText)
-      .then(function() {
-        kwin.refreshRecommendations();
-      })
+    switch(Domain.status(tab.url)) {
+      case "blacklisted":
+        BrowserIconView.blacklisted();
+        Env.sendMessage(tab.id, { method: "activateBlocking" }, function() {});
+        break;
+
+      case "verified":
+        BrowserIconView.verified();
+        break;
+
+      default:
+        BrowserIconView.deactivate();
+    }
   })
   
 }
@@ -110,38 +117,33 @@ Application.tabEvent = function(action_info) {
 Application.refreshEvent = function(tabId, changeInfo, tab) {
   
   if(tab && tab.url && tab.status && tab.status == "complete") {
-    console.log("refresh event started - ");
-    var kwin = new KTab(tab.id);
 
-    // Automatically starts the tutorial for the use if she lands on the tutorial page
-    if(tab.url.includes("start.getdata.io")) {
-      Application.startTutorial(tab);    
+    switch(Domain.status(tab.url)) {
+      case "blacklisted":
+        BrowserIconView.blacklisted();
+        Env.sendMessage(tab.id, { method: "activateBlocking" }, function() {});
+        break;
 
-    // Handle autoclose path
-    } else if (Application.shouldHandleFirstLogin(tab) ) {
-      Application.handleFirstLogin(tab);
+      case "verified":
+        BrowserIconView.verified();
+        break;
 
-    // Avoiding race condition versus start tutorial page
-    } else if(kwin.isActive() ) {
-      if(!tab.url.includes("start.getdata.io") ) {
-        kwin.activate();
-        BrowserIconView.activate();          
-      }
-      
-    } else {
-      BrowserIconView.deactivate();    
-    }  
+      default:
+        BrowserIconView.deactivate();
+    }
 
-    // Checks to see if there are any public data sources available for this URL
-    Application.syncDomainRecommendations(tab)
-      .then(Application.setBadgeText)
-      .then(function(datasources_response) {
-        var kwin = new KTab(tab.id);
-        kwin.refreshRecommendations();
-        kwin.setDataSourceCount(datasources_response.count);
-        kwin.setDataSourceCommunityUrl( "https://getdata.io" + datasources_response.url);
-        kwin.setDomain(tab.url);
-    });
+    
+
+    // // Checks to see if there are any public data sources available for this URL
+    // Application.syncDomainRecommendations(tab)
+    //   .then(Application.setBadgeText)
+    //   .then(function(datasources_response) {
+    //     var kwin = new KTab(tab.id);
+    //     kwin.refreshRecommendations();
+    //     kwin.setDataSourceCount(datasources_response.count);
+    //     kwin.setDataSourceCommunityUrl( "https://getdata.io" + datasources_response.url);
+    //     kwin.setDomain(tab.url);
+    // });
   }
 }
 
@@ -150,7 +152,6 @@ Application.shouldHandleFirstLogin = function(tab) {
   return tab.url.includes(CONFIG["server_host"] + CONFIG.paths.autoclose_path)
 }
 
-// Closes the popup window
 Application.handleFirstLogin = function(tab) {
   var target_tab_id = tab.url.match(/tab_id=([0-9]+)/)[1] * 1;
   var kwin = new KTab(target_tab_id);
@@ -175,7 +176,7 @@ Application.startTutorial = function(tab) {
   var tab_id = tab.id;
   var kwin = new KTab(tab_id);
   kwin.activate();
-  BrowserIconView.activate();
+  BrowserIconView.blacklisted();
   Application.msg_controllers.mixpanel.trackExtensionActivation();  
 }
 
@@ -245,22 +246,22 @@ Application.setBadgeText = function() {
 }
 
 Application.loadPublicCountCache = function() {
-  var deferred  = $.Deferred();
+  // var deferred  = $.Deferred();
 
-  $.get( 'https://cache.getdata.io/PUBLIC_KRAKE/domain_counts_new.json', function (data) {
-    Application.public_count = Application.public_count  || {};
-    var server_response = JSON.parse(data);
-    for(var i = 0; i < Object.keys(server_response).length ; i++) {
-      var domain_name = Object.keys(server_response)[i]
-      Application.public_count[domain_name] = Application.public_count[domain_name] || {};
-      Application.public_count[domain_name]["count"] = server_response[domain_name]["count"];
-      Application.public_count[domain_name]["url"] = server_response[domain_name]["url"];
-      Application.public_count[domain_name]["last_update"] = server_response[domain_name]["last_update"];
-    };
-    deferred.resolve();    
-  });
+  // $.get( 'https://cache.getdata.io/PUBLIC_KRAKE/domain_counts_new.json', function (data) {
+  //   Application.public_count = Application.public_count  || {};
+  //   var server_response = JSON.parse(data);
+  //   for(var i = 0; i < Object.keys(server_response).length ; i++) {
+  //     var domain_name = Object.keys(server_response)[i]
+  //     Application.public_count[domain_name] = Application.public_count[domain_name] || {};
+  //     Application.public_count[domain_name]["count"] = server_response[domain_name]["count"];
+  //     Application.public_count[domain_name]["url"] = server_response[domain_name]["url"];
+  //     Application.public_count[domain_name]["last_update"] = server_response[domain_name]["last_update"];
+  //   };
+  //   deferred.resolve();    
+  // });
 
-  return deferred.promise();
+  // return deferred.promise();
 }
 
 

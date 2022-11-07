@@ -14,7 +14,7 @@ var DomArrayGenerator = Backbone.View.extend({
     Class Names that prevents elements from being selected by our mouse click events
     The list of css queries describes either these doms, their direct parents or ancestore further up the DOM tree
   **/
-  reserved_classnames: [ "getdata-intro-modal", "getdata-sidebar", "getdata-selected_dom", 
+  reserved_classnames: [ "getdata-intro-modal", "cypher-sidebar", "getdata-selected_dom", 
     "hopscotch-bubble", "hopscotch-bubble-container", "hopscotch-bubble-number", "hopscotch-bubble-content", 
     "hopscotch-title", "hopscotch-content", "getdata-cloud-save-link"
   ],    

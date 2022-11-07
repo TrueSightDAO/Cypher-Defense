@@ -1,4 +1,4 @@
-.getdata-sidebar {
+.cypher-sidebar {
   position: fixed !important;
   top: 20px;
   right: 130px;
@@ -14,7 +14,7 @@
 }
 
 /** Top bar **/
-.getdata-sidebar #getdata-header {
+.cypher-sidebar #getdata-header {
   cursor: grab;
   width: 320px;  
   height: 40px;
@@ -26,7 +26,7 @@
   float:left;  
 }
 
-.getdata-sidebar #getdata-header #help-icon {
+.cypher-sidebar #getdata-header #help-icon {
   height: 16px;
   width: 16px;
   float: left;
@@ -35,9 +35,9 @@
   cursor: pointer;
 }
 
-.getdata-sidebar #getdata-header #extension-name {
+.cypher-sidebar #getdata-header #extension-name {
   height: 9px;
-  width: 72px;
+  width: 320px;
   float: left;
   margin-left: 0px;
   margin-top: 10px;
@@ -45,13 +45,13 @@
   
 }
 
-.getdata-sidebar #getdata-header #extension-name img.logo-icon {
+.cypher-sidebar #getdata-header #extension-name img.logo-icon {
   display: table;
   pointer-events: none;
   outline: none;
 }
 
-.getdata-sidebar #getdata-header #close-icon {
+.cypher-sidebar #getdata-header #close-icon {
   height: 16px;
   width: 16px;
   float: right;
@@ -62,7 +62,7 @@
 
 
 /** Community recipes **/
-.getdata-sidebar #datasource_recommendations_holder {
+.cypher-sidebar #datasource_recommendations_holder {
   float: right;
   height: 20px;
   width: auto; 
@@ -75,12 +75,12 @@
   padding: 4px;
 }
 
-.getdata-sidebar #datasource_recommendations_holder:hover {
+.cypher-sidebar #datasource_recommendations_holder:hover {
   background: #363535;
 }
 
 
-.getdata-sidebar #datasource_recommendations_holder #recommendations_num {
+.cypher-sidebar #datasource_recommendations_holder #recommendations_num {
   color: #8D8D8D;
   font-family: "Open Sans";
   font-style: normal;
@@ -94,11 +94,11 @@
   pointer-events: none;  
 }
 
-.getdata-sidebar #datasource_recommendations_holder:hover #recommendations_num {
+.cypher-sidebar #datasource_recommendations_holder:hover #recommendations_num {
   color: #FFFFFF;
 }
 
-.getdata-sidebar #datasource_recommendations_holder #recommendations_icon {
+.cypher-sidebar #datasource_recommendations_holder #recommendations_icon {
   display:inline-block; 
   position: relative;
   top: 3px;
@@ -108,18 +108,18 @@
   width: 22px;
 }
 
-.getdata-sidebar #datasource_recommendations_holder:hover #recommendations_icon {
+.cypher-sidebar #datasource_recommendations_holder:hover #recommendations_icon {
   background-image: url("chrome-extension://__MSG_@@extension_id__/images/recommendation-active.svg");   
 }
 
 /** Footer columns counter sections **/
-.getdata-sidebar #columns {
+.cypher-sidebar #columns {
   height: 40px !important;
   max-width: 280px;
   position: absolute;
 }
 
-.getdata-sidebar #columns .column {
+.cypher-sidebar #columns .column {
   cursor: pointer;
   position: relative;
   width: 40px;
@@ -128,7 +128,7 @@
   background: #333333;
 }
 
-.getdata-sidebar #columns .column .counter {
+.cypher-sidebar #columns .column .counter {
   width: 40px !important;  
   cursor: pointer;
   height: 40px;
@@ -152,7 +152,7 @@
 
 }
 
-.getdata-sidebar #columns .column.active .counter {
+.cypher-sidebar #columns .column.active .counter {
   /*box-shadow: 1px 0px 0px rgba(255, 255, 255, 0.1), 0px -1px 0px #FFFFFF;*/
   color: #FFFFFF;  
   background: #222222;
@@ -160,7 +160,7 @@
 
 
 
-.getdata-sidebar #columns .column .col-name {
+.cypher-sidebar #columns .column .col-name {
   background-color: #b5b5c3;
   color: #000;  
   font-size: 12px;
@@ -182,26 +182,26 @@
   display: inline-block;
 }
 
-.getdata-sidebar #columns .column .col-name:focus, .getdata-sidebar #columns .column:hover .col-name {
+.cypher-sidebar #columns .column .col-name:focus, .cypher-sidebar #columns .column:hover .col-name {
   background-color: #fff;
   color: #000;
   outline: none;
 }
 
-.getdata-sidebar #columns .column .col-name:focus, .getdata-sidebar #columns .column.active .col-name {
+.cypher-sidebar #columns .column .col-name:focus, .cypher-sidebar #columns .column.active .col-name {
   background-color: #fff;
   color: #000;
   outline: none;
 }
 
-.getdata-sidebar #columns .column .stick-holder .stick-pagination {
+.cypher-sidebar #columns .column .stick-holder .stick-pagination {
   width: 4px;
   height: 20px;
   padding-right: 1px;
 }
 
 
-.getdata-sidebar #columns .column .delete {
+.cypher-sidebar #columns .column .delete {
   display: none;
   font-size: 6px;
   font-weight: lighter;
@@ -215,18 +215,18 @@
   left: 30px;
 }
 
-.getdata-sidebar #columns .column:hover .delete {
+.cypher-sidebar #columns .column:hover .delete {
   display: inline-block;
 }
 
 
-.getdata-sidebar #selection_holder {
+.cypher-sidebar #selection_holder {
   height: 40px;
   width: 320px;
   background: #333333;
 }
 
-.getdata-sidebar #selection_holder .activate_listing_mode {
+.cypher-sidebar #selection_holder .activate_listing_mode {
   margin-top: 10px;
   margin-right: 17px;
   height: 18px;
@@ -239,13 +239,13 @@
 }
 
 
-.getdata-sidebar #selection_holder .activate_listing_mode:hover {
+.cypher-sidebar #selection_holder .activate_listing_mode:hover {
   background-image: url("chrome-extension://__MSG_@@extension_id__/images/chevron-up-active.svg");   
 }
 
 
 /** Layouts in various modes **/
-.getdata-sidebar .loading-panel {
+.cypher-sidebar .loading-panel {
   clear: both;
   color: #fff;
   height: 0px;
@@ -253,7 +253,7 @@
   text-align: center;
 }
 
-.getdata-sidebar .empty-panel {
+.cypher-sidebar .empty-panel {
   clear: both;
   color: #fff;
   height: 0px;
@@ -261,234 +261,234 @@
   text-align: center;
 }
 
-.getdata-sidebar .detailed-panel {
+.cypher-sidebar .detailed-panel {
   clear: both;
   color: #fff;  
   height: 0px;
 }
 
-.getdata-sidebar #column-recommendations-panel {
+.cypher-sidebar #column-recommendations-panel {
   clear: both;
   color: #fff;  
   height: 0px;  
 }
 
 /*** Loading mode ***/
-.getdata-sidebar.loading-mode .loading-panel {
+.cypher-sidebar.loading-mode .loading-panel {
   height: 490px;
 }
 
-.getdata-sidebar.loading-mode .empty-panel {
+.cypher-sidebar.loading-mode .empty-panel {
   height: 0px;
 }
 
-.getdata-sidebar.loading-mode #tab-panel {
+.cypher-sidebar.loading-mode #tab-panel {
   height: 0px;
   overflow-y: hidden;  
 }
 
-.getdata-sidebar.loading-mode .detailed-panel {
+.cypher-sidebar.loading-mode .detailed-panel {
   height: 0px;
   overflow-y: hidden;
 }
 
-.getdata-sidebar.loading-mode #column-recommendations-panel {
+.cypher-sidebar.loading-mode #column-recommendations-panel {
   height: 0px;
   overflow-y: hidden;
 }
 
-.getdata-sidebar.loading-mode #selection_holder {
+.cypher-sidebar.loading-mode #selection_holder {
   height: 0px;
   overflow-y: hidden;
 }
 
-.getdata-sidebar.loading-mode .listings-header {
+.cypher-sidebar.loading-mode .listings-header {
   height: 0px;
   overflow-y: hidden;
   border-bottom: 0px;
 }
 
-.getdata-sidebar.loading-mode .listings-panel {
+.cypher-sidebar.loading-mode .listings-panel {
   height: 0px;
   overflow-y: hidden;
 }
 
 
 /*** Empty mode ***/
-.getdata-sidebar.empty-mode .loading-panel {
+.cypher-sidebar.empty-mode .loading-panel {
   height: 0px;
   overflow-y: hidden;
 }
 
-.getdata-sidebar.empty-mode .empty-panel {
+.cypher-sidebar.empty-mode .empty-panel {
   height: 422px;
 }
 
-.getdata-sidebar.empty-mode #tab-panel {
+.cypher-sidebar.empty-mode #tab-panel {
   height: 28px;
 }
 
-.getdata-sidebar.empty-mode .detailed-panel {
+.cypher-sidebar.empty-mode .detailed-panel {
   height: 0px;
   overflow-y: hidden;
 }
 
-.getdata-sidebar.empty-mode #column-recommendations-panel {
+.cypher-sidebar.empty-mode #column-recommendations-panel {
   height: 0px;
   overflow-y: hidden;
 }
 
-.getdata-sidebar.empty-mode #selection_holder {
+.cypher-sidebar.empty-mode #selection_holder {
   height: 40px;
   overflow-y: hidden;
 }
 
-.getdata-sidebar.empty-mode .listings-header {
+.cypher-sidebar.empty-mode .listings-header {
   height: 0px;
   overflow-y: hidden;
   border-bottom: 0px;
 }
 
-.getdata-sidebar.empty-mode .listings-panel {
+.cypher-sidebar.empty-mode .listings-panel {
   height: 0px;
   overflow-y: hidden;
 }
 
 
 /*** Active mode ***/
-.getdata-sidebar.active-mode .loading-panel {
+.cypher-sidebar.active-mode .loading-panel {
   height: 0px;
   overflow-y: hidden;
 }
 
-.getdata-sidebar.active-mode .detailed-panel {
+.cypher-sidebar.active-mode .detailed-panel {
   height: 422px;
 }
 
-.getdata-sidebar.active-mode #tab-panel {
+.cypher-sidebar.active-mode #tab-panel {
   height: 28px;
 }
 
-.getdata-sidebar.active-mode .empty-panel {
+.cypher-sidebar.active-mode .empty-panel {
   height: 0px;
   overflow-y: hidden;
 }
 
-.getdata-sidebar.active-mode #column-recommendations-panel {
+.cypher-sidebar.active-mode #column-recommendations-panel {
   height: 0px;
   overflow-y: hidden;
 }
 
-.getdata-sidebar.active-mode #selection_holder {
+.cypher-sidebar.active-mode #selection_holder {
   height: 40px;
   overflow-y: hidden;
 }
 
-.getdata-sidebar.active-mode .header-panel {
+.cypher-sidebar.active-mode .header-panel {
   height: 0px;
   overflow-y: hidden;
 }
 
-.getdata-sidebar.active-mode .listings-header {
+.cypher-sidebar.active-mode .listings-header {
   height: 0px;
   overflow-y: hidden;
   border-bottom: 0px;
 }
 
-.getdata-sidebar.active-mode .listings-panel {
+.cypher-sidebar.active-mode .listings-panel {
   height: 0px;
   overflow-y: hidden;
 }
 
 /*** Listing mode ***/
-.getdata-sidebar.listing-mode .loading-panel {
+.cypher-sidebar.listing-mode .loading-panel {
   height: 0px;
   overflow-y: hidden;
 }
 
-.getdata-sidebar.listing-mode .listings-panel {
+.cypher-sidebar.listing-mode .listings-panel {
   height: 450px;
 }
 
-.getdata-sidebar.listing-mode #tab-panel {
+.cypher-sidebar.listing-mode #tab-panel {
   height: 0px;
   overflow-y: hidden;
 }
 
-.getdata-sidebar.listing-mode .empty-panel {
+.cypher-sidebar.listing-mode .empty-panel {
   height: 0px;
   overflow-y: hidden;
 }
 
-.getdata-sidebar.listing-mode #column-recommendations-panel {
+.cypher-sidebar.listing-mode #column-recommendations-panel {
   height: 0px;
   overflow-y: hidden;
 }
 
-.getdata-sidebar.listing-mode .detailed-panel {
+.cypher-sidebar.listing-mode .detailed-panel {
   height: 0px;  
   overflow-y: hidden;
 }
 
-.getdata-sidebar.listing-mode #selection_holder {
+.cypher-sidebar.listing-mode #selection_holder {
   height: 0px;
   display: none;
 }
 
-.getdata-sidebar.listing-mode .listings-header {
+.cypher-sidebar.listing-mode .listings-header {
   height: 40px;
 }
 
 
 /** Recommendations mode **/
-.getdata-sidebar.recommendations-mode .loading-panel {
+.cypher-sidebar.recommendations-mode .loading-panel {
   height: 0px;
   overflow-y: hidden;
 }
 
-.getdata-sidebar.recommendations-mode #column-recommendations-panel {
+.cypher-sidebar.recommendations-mode #column-recommendations-panel {
   clear: both;
   color: #fff;  
   height: 422px;  
 }
 
-.getdata-sidebar.recommendations-mode #tab-panel {
+.cypher-sidebar.recommendations-mode #tab-panel {
   height: 28px;
 }
 
-.getdata-sidebar.recommendations-mode .empty-panel {
+.cypher-sidebar.recommendations-mode .empty-panel {
   height: 0px;
   overflow-y: hidden;
 }
 
-.getdata-sidebar.recommendations-mode .detailed-panel {
+.cypher-sidebar.recommendations-mode .detailed-panel {
   height: 0px;
   overflow-y: hidden;
 }
 
-.getdata-sidebar.recommendations-mode #selection_holder {
+.cypher-sidebar.recommendations-mode #selection_holder {
   height: 40px;
   overflow-y: hidden;
 }
 
-.getdata-sidebar.recommendations-mode .header-panel {
+.cypher-sidebar.recommendations-mode .header-panel {
   height: 0px;
   overflow-y: hidden;
 }
 
-.getdata-sidebar.recommendations-mode .listings-header {
+.cypher-sidebar.recommendations-mode .listings-header {
   height: 0px;
   overflow-y: hidden;
   border-bottom: 0px;
 }
 
-.getdata-sidebar.recommendations-mode .listings-panel {
+.cypher-sidebar.recommendations-mode .listings-panel {
   height: 0px;
   overflow-y: hidden;
 }
 
 /** Columns recommendation section **/
-.getdata-sidebar.recommendations-mode #recommendations-panel-icon {
+.cypher-sidebar.recommendations-mode #recommendations-panel-icon {
   margin-top: 30px;
   margin-left: 120px;
   margin-bottom: 10px;
@@ -496,7 +496,7 @@
   width: auto;
 }
 
-.getdata-sidebar.recommendations-mode #column-recommendations-header {
+.cypher-sidebar.recommendations-mode #column-recommendations-header {
   font-family: "Open Sans";
   font-style: normal;
   font-weight: bold;
@@ -513,7 +513,7 @@
   color: #FFFFFF;
 }
 
-.getdata-sidebar.recommendations-mode #column-recommendations-subheader {
+.cypher-sidebar.recommendations-mode #column-recommendations-subheader {
   font-family: "Open Sans";
   font-style: normal;
   font-weight: normal;
@@ -528,14 +528,14 @@
   width: 256px;
 }
 
-.getdata-sidebar.recommendations-mode #column-recommendations-listings {
+.cypher-sidebar.recommendations-mode #column-recommendations-listings {
   height: 210px;
   overflow-y: scroll;
 
 }
 
 
-.getdata-sidebar.recommendations-mode #column-recommendations-listings .recommended_panel_column {
+.cypher-sidebar.recommendations-mode #column-recommendations-listings .recommended_panel_column {
   width: 320px;
   height: 40px;
   
@@ -545,12 +545,12 @@
   box-sizing: border-box;
 }
 
-.getdata-sidebar.recommendations-mode #column-recommendations-listings .recommended_panel_column .recommendation-col_name {
+.cypher-sidebar.recommendations-mode #column-recommendations-listings .recommended_panel_column .recommendation-col_name {
   float: left;
 
 }
 
-.getdata-sidebar.recommendations-mode #column-recommendations-listings .recommended_panel_column .recommendation-counter {
+.cypher-sidebar.recommendations-mode #column-recommendations-listings .recommended_panel_column .recommendation-counter {
   font-family: Open Sans;
   font-style: normal;
   font-weight: normal;
@@ -567,13 +567,13 @@
   color: #8D8D8D;  
 }
 
-.getdata-sidebar.recommendations-mode #column-recommendations-listings .recommended_panel_column:nth-child(odd) {
+.cypher-sidebar.recommendations-mode #column-recommendations-listings .recommended_panel_column:nth-child(odd) {
   background-color: #2F2F2F;
 }
 
 
 /* Customize the label (the container) */
-.getdata-sidebar.recommendations-mode #column-recommendations-listings .recommended_panel_column .recommended-label {
+.cypher-sidebar.recommendations-mode #column-recommendations-listings .recommended_panel_column .recommended-label {
   display: block;
   position: relative;
   cursor: pointer;
@@ -601,16 +601,16 @@
 
 }
 
-.getdata-sidebar.recommendations-mode #column-recommendations-listings .recommended_panel_column:hover .recommended-label {
+.cypher-sidebar.recommendations-mode #column-recommendations-listings .recommended_panel_column:hover .recommended-label {
   /*color: #FFFFFF;    */
 }
 
-.getdata-sidebar.recommendations-mode #column-recommendations-listings .recommended_panel_column.active .recommended-label {
+.cypher-sidebar.recommendations-mode #column-recommendations-listings .recommended_panel_column.active .recommended-label {
   color: #FFFFFF;    
 }
 
 /* Hide the browser's default checkbox */
-.getdata-sidebar.recommendations-mode #column-recommendations-listings .recommended_panel_column .recommended-label input {
+.cypher-sidebar.recommendations-mode #column-recommendations-listings .recommended_panel_column .recommended-label input {
   position: absolute;
   opacity: 0;
   cursor: pointer;
@@ -620,7 +620,7 @@
 }
 
 /* Create a custom checkbox */
-.getdata-sidebar.recommendations-mode #column-recommendations-listings .recommended_panel_column .checkmark {
+.cypher-sidebar.recommendations-mode #column-recommendations-listings .recommended_panel_column .checkmark {
   position: absolute;
   top: 12px;
   display: block !important;
@@ -633,34 +633,34 @@
   box-sizing: border-box;
 }
 
-.getdata-sidebar.recommendations-mode #column-recommendations-listings .recommended_panel_column:nth-child(odd) .checkmark {
+.cypher-sidebar.recommendations-mode #column-recommendations-listings .recommended_panel_column:nth-child(odd) .checkmark {
   background-color: #2F2F2F;
 }
 
 /* On mouse-over, add a grey background color */
-.getdata-sidebar.recommendations-mode #column-recommendations-listings .recommended_panel_column .recommended-label:hover input ~ .checkmark {
+.cypher-sidebar.recommendations-mode #column-recommendations-listings .recommended_panel_column .recommended-label:hover input ~ .checkmark {
   background-color: #ccc;
 }
 
 /* When the checkbox is checked */
-.getdata-sidebar.recommendations-mode #column-recommendations-listings .recommended_panel_column .recommended-label input:checked ~ .checkmark {
+.cypher-sidebar.recommendations-mode #column-recommendations-listings .recommended_panel_column .recommended-label input:checked ~ .checkmark {
   background: #F03737;
 }
 
 /* Create the checkmark/indicator (hidden when not checked) */
-.getdata-sidebar.recommendations-mode #column-recommendations-listings .recommended_panel_column .checkmark:after {
+.cypher-sidebar.recommendations-mode #column-recommendations-listings .recommended_panel_column .checkmark:after {
   content: "";
   position: absolute;
   display: none;
 }
 
 /* Show the checkmark when checked */
-.getdata-sidebar.recommendations-mode #column-recommendations-listings .recommended_panel_column .recommended-label input:checked ~ .checkmark:after {
+.cypher-sidebar.recommendations-mode #column-recommendations-listings .recommended_panel_column .recommended-label input:checked ~ .checkmark:after {
   display: block;
 }
 
 /* Style the checkmark/indicator */
-.getdata-sidebar.recommendations-mode #column-recommendations-listings .recommended_panel_column .recommended-label .checkmark:after {
+.cypher-sidebar.recommendations-mode #column-recommendations-listings .recommended_panel_column .recommended-label .checkmark:after {
   left: 3px;
   top: 0px;
   width: 4px;
@@ -678,13 +678,13 @@
 
 /** Listing section **/
 
-.getdata-sidebar.listing-mode .listings-panel .listing_panel_column {
+.cypher-sidebar.listing-mode .listings-panel .listing_panel_column {
   background: #363535;
   /*border-bottom: 1px solid rgba(255, 255, 255, 0.1);  */
   border-top: 1px solid #131313;
 }
 
-.getdata-sidebar.listing-mode .listings-panel .listing_panel_column .listing_panel_top_section .listing_panel_col_header {
+.cypher-sidebar.listing-mode .listings-panel .listing_panel_column .listing_panel_top_section .listing_panel_col_header {
   font-family: "Open Sans";
   font-style: normal;
   font-weight: 600;
@@ -706,11 +706,11 @@
   margin-bottom: 13px;
 }
 
-.getdata-sidebar.listing-mode .listings-panel .listing_panel_column.active .listing_panel_top_section .listing_panel_col_header {
+.cypher-sidebar.listing-mode .listings-panel .listing_panel_column.active .listing_panel_top_section .listing_panel_col_header {
   color: #ffffff;
 }
 
-.getdata-sidebar.listing-mode .listings-panel .listing_panel_column .listing_panel_top_section .list-panel-action-holder {
+.cypher-sidebar.listing-mode .listings-panel .listing_panel_column .listing_panel_top_section .list-panel-action-holder {
   height: 28px;
   padding-right: 15px;
 
@@ -721,15 +721,15 @@
 }
 
 
-.getdata-sidebar.listing-mode .listings-panel .listing_panel_column:hover {
+.cypher-sidebar.listing-mode .listings-panel .listing_panel_column:hover {
   background: #363535;
 }
 
-.getdata-sidebar.listing-mode .listings-panel .listing_panel_column.active {
+.cypher-sidebar.listing-mode .listings-panel .listing_panel_column.active {
   background: #363535;
 }
 
-.getdata-sidebar.listing-mode .listings-panel .listing_panel_column .list-panel-action-holder .activate-icon {
+.cypher-sidebar.listing-mode .listings-panel .listing_panel_column .list-panel-action-holder .activate-icon {
   margin-top: 12px;
   height: 16px;
   width: 16px;
@@ -739,23 +739,23 @@
   cursor: pointer;
 }
 
-.getdata-sidebar.listing-mode .listings-panel .listing_panel_column:hover .list-panel-action-holder .activate-icon {
+.cypher-sidebar.listing-mode .listings-panel .listing_panel_column:hover .list-panel-action-holder .activate-icon {
   display: block;
   background-image: url("chrome-extension://__MSG_@@extension_id__/images/plus-circle.svg");       
 }
 
-.getdata-sidebar.listing-mode .listings-panel .listing_panel_column.active .list-panel-action-holder .activate-icon {
+.cypher-sidebar.listing-mode .listings-panel .listing_panel_column.active .list-panel-action-holder .activate-icon {
   display: block;
   background-image: url("chrome-extension://__MSG_@@extension_id__/images/plus-circle.svg");       
 }
 
-.getdata-sidebar.listing-mode .listings-panel .listing_panel_column:hover .list-panel-action-holder .activate-icon:hover {
+.cypher-sidebar.listing-mode .listings-panel .listing_panel_column:hover .list-panel-action-holder .activate-icon:hover {
   display: block;
   background-image: url("chrome-extension://__MSG_@@extension_id__/images/plus-circle-active.svg");       
 }
 
 
-.getdata-sidebar.listing-mode .listings-panel .listing_panel_column .list-panel-action-holder .delete-icon {
+.cypher-sidebar.listing-mode .listings-panel .listing_panel_column .list-panel-action-holder .delete-icon {
   margin-top: 12px;
   height: 16px;
   width: 16px;
@@ -766,30 +766,30 @@
 
 
 
-.getdata-sidebar.listing-mode .listings-panel .listing_panel_column:hover .list-panel-action-holder .delete-icon {
+.cypher-sidebar.listing-mode .listings-panel .listing_panel_column:hover .list-panel-action-holder .delete-icon {
   display: block;
   background-image: url("chrome-extension://__MSG_@@extension_id__/images/delete.svg");     
 }
 
-.getdata-sidebar.listing-mode .listings-panel .listing_panel_column.active .list-panel-action-holder .delete-icon {
+.cypher-sidebar.listing-mode .listings-panel .listing_panel_column.active .list-panel-action-holder .delete-icon {
   display: block;
   background-image: url("chrome-extension://__MSG_@@extension_id__/images/delete.svg");     
 }
 
-.getdata-sidebar.listing-mode .listings-panel .listing_panel_column .list-panel-action-holder .delete-icon:hover {
+.cypher-sidebar.listing-mode .listings-panel .listing_panel_column .list-panel-action-holder .delete-icon:hover {
   display: block;
   background-image: url("chrome-extension://__MSG_@@extension_id__/images/delete-active.svg");     
 }
 
 
 
-.getdata-sidebar.listing-mode .listings-panel .listing_panel_column .listing_panel_col_name_holder {
+.cypher-sidebar.listing-mode .listings-panel .listing_panel_column .listing_panel_col_name_holder {
   margin-right: 16px;
   margin-left: 16px;
   margin-bottom: 9px;
 }
 
-.getdata-sidebar.listing-mode .listings-panel .listing_panel_column .listing_panel_col_name_holder .col_name {
+.cypher-sidebar.listing-mode .listings-panel .listing_panel_column .listing_panel_col_name_holder .col_name {
   font-family: "Open Sans";
   font-weight: normal;
   font-size: 12px;
@@ -808,12 +808,12 @@
   outline: none;  
 }
 
-.getdata-sidebar.listing-mode .listings-panel .listing_panel_column .listing_panel_col_name_holder .col_name.empty {
+.cypher-sidebar.listing-mode .listings-panel .listing_panel_column .listing_panel_col_name_holder .col_name.empty {
   font-style: italic;
   color: #8D8D8D;  
 }
 
-.getdata-sidebar.listing-mode .listings-panel .listing_panel_column .listing_panel_required_attribute_holder {
+.cypher-sidebar.listing-mode .listings-panel .listing_panel_column .listing_panel_required_attribute_holder {
   margin-right: 16px;
   margin-left: 16px;    
   margin-bottom: 9px;
@@ -828,7 +828,7 @@
 }
  
 
-.getdata-sidebar.listing-mode .listings-panel .listing_panel_column .listing_panel_required_attribute_holder .listing_panel_required_attribute {
+.cypher-sidebar.listing-mode .listings-panel .listing_panel_column .listing_panel_required_attribute_holder .listing_panel_required_attribute {
   font-family: "Open Sans";
   font-style: normal;
   font-weight: normal;
@@ -852,18 +852,18 @@
   margin-bottom: 9px;
 }
 
-.getdata-sidebar.listing-mode .listings-panel .listing_panel_column .listing_panel_required_attribute_holder .listing_panel_required_attribute[disabled] {
+.cypher-sidebar.listing-mode .listings-panel .listing_panel_column .listing_panel_required_attribute_holder .listing_panel_required_attribute[disabled] {
   color: #8D8D8D;
   cursor: not-allowed;
 }
 
-.getdata-sidebar.listing-mode .listings-panel .listing_panel_column .listing-panel-sample-data{
+.cypher-sidebar.listing-mode .listings-panel .listing_panel_column .listing-panel-sample-data{
   padding-left: 15px;
   padding-right: 17px;
   padding-bottom: 15px;
 }
 
-.getdata-sidebar.listing-mode .listings-panel .listing_panel_column .listing-panel-sample-data .listing-panel-sample-data-content {
+.cypher-sidebar.listing-mode .listings-panel .listing_panel_column .listing-panel-sample-data .listing-panel-sample-data-content {
   background: #2F2F2F;
   font-family: "Open Sans";
   font-style: normal;
@@ -881,7 +881,7 @@
 
 }
 
-.getdata-sidebar.listing-mode .listings-panel .listing_panel_column .listing-panel-sample-data .listing-panel-sample-data-content a {
+.cypher-sidebar.listing-mode .listings-panel .listing_panel_column .listing-panel-sample-data .listing-panel-sample-data-content a {
   font-family: Inter;
   font-style: normal;
   font-weight: 500;
@@ -891,7 +891,7 @@
   text-decoration: underline;
 }
 
-.getdata-sidebar .listings-header {
+.cypher-sidebar .listings-header {
   height: 40px;
   width: 320px;  
   font-family: "Open Sans";
@@ -905,13 +905,13 @@
   background: #363535;
 }
 
-.getdata-sidebar .listings-header  #listing_header_title {
+.cypher-sidebar .listings-header  #listing_header_title {
   margin-left: 15px;
   margin-top: 12px;
   float: left;
 }
 
-.getdata-sidebar .listings-header .deactivate_listing_mode {
+.cypher-sidebar .listings-header .deactivate_listing_mode {
   height: 16px;
   width: 16px;
   margin-top: 12px;
@@ -923,12 +923,12 @@
   cursor: pointer;  
 }
 
-.getdata-sidebar .listings-header .deactivate_listing_mode:hover {
+.cypher-sidebar .listings-header .deactivate_listing_mode:hover {
   background-image: url("chrome-extension://__MSG_@@extension_id__/images/chevron-down-active.svg");     
 }
 
 
-.getdata-sidebar .listings-panel {
+.cypher-sidebar .listings-panel {
   clear: both;
   color: #fff;  
   height: 0px;
@@ -936,11 +936,11 @@
 }
 
 /** Loading panel section **/
-.getdata-sidebar.loading-mode #getdata-footer #save_holder {
+.cypher-sidebar.loading-mode #getdata-footer #save_holder {
   display: none !important;
 }
 
-.getdata-sidebar .loading-panel .loading-icon {
+.cypher-sidebar .loading-panel .loading-icon {
   margin-left: 60px;
   margin-top: 90px; 
   margin-bottom: 20px; 
@@ -948,13 +948,13 @@
   height: 130px;  
 }
 
-.getdata-sidebar .loading-panel .loading-icon img {  
+.cypher-sidebar .loading-panel .loading-icon img {  
   border-radius: 30px;
   width: 200px;
   height: 130px;  
 }
 
-.getdata-sidebar .loading-panel .loading-header {
+.cypher-sidebar .loading-panel .loading-header {
   margin-bottom: 10px;
 
   font-family: "Open Sans";
@@ -971,7 +971,7 @@
 
 }
 
-.getdata-sidebar .loading-panel .loading-subheader {
+.cypher-sidebar .loading-panel .loading-subheader {
 
   font-family: "Open Sans";
   font-style: normal;
@@ -987,26 +987,26 @@
 }
 
 /** Empty panel section **/
-.getdata-sidebar .empty-panel .empty-icon {
-  margin-left: 115px;
+.cypher-sidebar .empty-panel .empty-icon {
+  margin-left: 98px;
   margin-top: 120px;  
   margin-bottom: 50px;
-  width: 90px;
-  height: 70px;  
+  width: 128px;
+  height: 128px;  
 
-  background-image: url("chrome-extension://__MSG_@@extension_id__/images/empty-state.svg");  
+  background-image: url("chrome-extension://__MSG_@@extension_id__/images/cypher_icon_128_warning.png");  
 }
 
-.getdata-sidebar .empty-panel.is-first .empty-icon {
-  margin-left: 115px;
+.cypher-sidebar .empty-panel.is-first .empty-icon {
+  margin-left: 98px;
   margin-top: 120px; 
   margin-bottom: 50px; 
-  width: 90px;
-  height: 70px;  
-  background-image: url("chrome-extension://__MSG_@@extension_id__/images/empty-state-first.svg");  
+  width: 128px;
+  height: 128px;  
+  background-image: url("chrome-extension://__MSG_@@extension_id__/images/cypher_icon_128_warning.png");  
 }
 
-.getdata-sidebar .empty-panel .empty-header {
+.cypher-sidebar .empty-panel .empty-header {
   margin-bottom: 10px;
 
   font-family: "Open Sans";
@@ -1023,7 +1023,7 @@
 
 }
 
-.getdata-sidebar .empty-panel .empty-subheader {
+.cypher-sidebar .empty-panel .empty-subheader {
 
   font-family: "Open Sans";
   font-style: normal;
@@ -1040,7 +1040,7 @@
 
 
 /** Detailed panel section **/
-.getdata-sidebar .detailed-panel .detailed-panel-top {
+.cypher-sidebar .detailed-panel .detailed-panel-top {
   padding-bottom: 34px;
   padding-top: 30px;
   padding-left: 14px;
@@ -1048,13 +1048,13 @@
   text-align: center;
 }
 
-.getdata-sidebar .detailed-panel .detailed-panel-top .detailed-panel-icon {
+.cypher-sidebar .detailed-panel .detailed-panel-top .detailed-panel-icon {
   margin-bottom: 10px;
   display: inline;
   width: auto;
 }
 
-.getdata-sidebar .detailed-panel .detailed-panel-top .detailed-panel-top-header {
+.cypher-sidebar .detailed-panel .detailed-panel-top .detailed-panel-top-header {
   margin-bottom: 8px;
 
   font-family: "Open Sans";
@@ -1068,7 +1068,7 @@
 
 }
 
-.getdata-sidebar .detailed-panel .detailed-panel-top .detailed-panel-top-subheader {
+.cypher-sidebar .detailed-panel .detailed-panel-top .detailed-panel-top-subheader {
   font-family: "Open Sans";
   font-style: normal;
   font-weight: normal;
@@ -1084,7 +1084,7 @@
   text-align: center;  
 }
 
-.getdata-sidebar .detailed-panel .detailed-panel-bottom {
+.cypher-sidebar .detailed-panel .detailed-panel-bottom {
   font-family: "Inter";
   font-style: normal;
   font-weight: normal;
@@ -1096,7 +1096,7 @@
   color: #C4C4C4;
 }
 
-.getdata-sidebar .detailed-panel .detailed-panel-bottom #col_name_holder {
+.cypher-sidebar .detailed-panel .detailed-panel-bottom #col_name_holder {
   margin-right: 15px;
   margin-left: 15px;    
   margin-bottom: 9px;
@@ -1105,7 +1105,7 @@
   box-sizing: border-box;  
 }
 
-.getdata-sidebar .detailed-panel .detailed-panel-bottom #col_name_holder #curr_col_name {
+.cypher-sidebar .detailed-panel .detailed-panel-bottom #col_name_holder #curr_col_name {
   font-family: "Open Sans";
 
   font-weight: normal;
@@ -1123,18 +1123,18 @@
 
 }
 
-.getdata-sidebar .detailed-panel .detailed-panel-bottom #col_name_holder #curr_col_name.empty {
+.cypher-sidebar .detailed-panel .detailed-panel-bottom #col_name_holder #curr_col_name.empty {
     font-style: italic;
     color: #8D8D8D;
 }
 
 
-.getdata-sidebar .detailed-panel .detailed-panel-bottom #col_name_holder #curr_col_name[contenteditable="false"] {
+.cypher-sidebar .detailed-panel .detailed-panel-bottom #col_name_holder #curr_col_name[contenteditable="false"] {
   color: #ccc;
 
 }
 
-.getdata-sidebar .detailed-panel .detailed-panel-bottom #required_attribute_holder {
+.cypher-sidebar .detailed-panel .detailed-panel-bottom #required_attribute_holder {
   margin-right: 16px;
   margin-left: 16px;    
   margin-bottom: 9px;
@@ -1149,7 +1149,7 @@
 }
  
 
-.getdata-sidebar .detailed-panel .detailed-panel-bottom #required_attribute_holder #required_attribute {
+.cypher-sidebar .detailed-panel .detailed-panel-bottom #required_attribute_holder #required_attribute {
 
   font-family: "Open Sans";
   font-style: normal;
@@ -1174,7 +1174,7 @@
   cursor: pointer;
 }
 
-.getdata-sidebar .detailed-panel .detailed-panel-bottom .detailed-panel-sample-data {
+.cypher-sidebar .detailed-panel .detailed-panel-bottom .detailed-panel-sample-data {
   background: #2F2F2F;
   width: 290px;
   height: 55px;
@@ -1184,7 +1184,7 @@
   margin-right: 15px;
 }
 
-.getdata-sidebar .detailed-panel .detailed-panel-bottom .detailed-panel-sample-data .detailed-panel-sample-data-content {
+.cypher-sidebar .detailed-panel .detailed-panel-bottom .detailed-panel-sample-data .detailed-panel-sample-data-content {
   font-family: "Open Sans";
   font-style: normal;
   font-weight: normal;
@@ -1207,12 +1207,12 @@
   overflow-y: scroll;
 }
 
-.getdata-sidebar .detailed-panel .detailed-panel-bottom .detailed-panel-sample-data .detailed-panel-sample-data-content .sample-image {
+.cypher-sidebar .detailed-panel .detailed-panel-bottom .detailed-panel-sample-data .detailed-panel-sample-data-content .sample-image {
   text-align: center;
   width: 50px;
 }
 
-.getdata-sidebar .detailed-panel .detailed-panel-bottom .detailed-panel-sample-data .detailed-panel-sample-data-content a {
+.cypher-sidebar .detailed-panel .detailed-panel-bottom .detailed-panel-sample-data .detailed-panel-sample-data-content a {
   text-decoration: underline;
 
   font-family: "Open Sans";
@@ -1229,13 +1229,13 @@
 }
 
 
-.getdata-sidebar .detailed-panel .detailed-panel-bottom .detailed-panel-actions {
+.cypher-sidebar .detailed-panel .detailed-panel-bottom .detailed-panel-actions {
   padding-left: 15px;
   padding-right: 14px;
   height: 50px;
 }
 
-.getdata-sidebar .detailed-panel .detailed-panel-bottom .detailed-panel-actions #reset_column {
+.cypher-sidebar .detailed-panel .detailed-panel-bottom .detailed-panel-actions #reset_column {
   cursor: pointer;  
   display: table;
   width: 29px;
@@ -1265,12 +1265,12 @@
 
 }
 
-.getdata-sidebar .detailed-panel .detailed-panel-bottom .detailed-panel-actions #reset_column:hover, 
-.getdata-sidebar .detailed-panel .detailed-panel-bottom .detailed-panel-actions #reset_column:focus {
+.cypher-sidebar .detailed-panel .detailed-panel-bottom .detailed-panel-actions #reset_column:hover, 
+.cypher-sidebar .detailed-panel .detailed-panel-bottom .detailed-panel-actions #reset_column:focus {
   background: #2F2F2F;
 }
 
-.getdata-sidebar .detailed-panel .detailed-panel-bottom .detailed-panel-actions #add_columns {
+.cypher-sidebar .detailed-panel .detailed-panel-bottom .detailed-panel-actions #add_columns {
   cursor: pointer;  
   display: table;
 
@@ -1295,7 +1295,7 @@
 }
 
 /** Main Footer section **/
-.getdata-sidebar #getdata-footer {
+.cypher-sidebar #getdata-footer {
   width: 320px;
   height: 50px;
   position: absolute;
@@ -1308,7 +1308,7 @@
 }
 
 
-.getdata-sidebar .add_button_holder {
+.cypher-sidebar .add_button_holder {
   float:left;  
   width: 48px;
   height: 24px;
@@ -1318,7 +1318,7 @@
 }
 
 
-.getdata-sidebar #getdata-footer #save_holder {
+.cypher-sidebar #getdata-footer #save_holder {
   margin-left: 26px;
   margin-top: 9px;
   margin-bottom: 9px;  
@@ -1340,11 +1340,11 @@
   color: #FFFFFF;
 }
 
-.getdata-sidebar #getdata-footer #save_holder:hover {
+.cypher-sidebar #getdata-footer #save_holder:hover {
   background: #FA4F4F;
 }
 
-.getdata-sidebar #getdata-footer #save_holder .create-text {
+.cypher-sidebar #getdata-footer #save_holder .create-text {
   font-family: "Open Sans";
   font-style: normal;
   font-weight: 600;
@@ -1360,17 +1360,17 @@
   color: #FFFFFF;
 }
 
-.getdata-sidebar #getdata-footer #save_holder.disabled {
+.cypher-sidebar #getdata-footer #save_holder.disabled {
   background: #8D8D8D;
   cursor: not-allowed;
 }
 
-.getdata-sidebar #getdata-footer #save_holder.disabled  .create-text {
+.cypher-sidebar #getdata-footer #save_holder.disabled  .create-text {
   font-style: italic;  
 }
  
 
-.getdata-sidebar #getdata-footer #save_holder .create-icon {
+.cypher-sidebar #getdata-footer #save_holder .create-icon {
   cursor: pointer;
   background-image: url("chrome-extension://__MSG_@@extension_id__/images/arrow-right-circle.svg");
   width: 18px;
@@ -1381,11 +1381,11 @@
    
 }
 
-.getdata-sidebar #getdata-footer #save_holder:hover .create-icon {
+.cypher-sidebar #getdata-footer #save_holder:hover .create-icon {
   background-image: url("chrome-extension://__MSG_@@extension_id__/images/arrow-right-circle.svg");
 }
 
-.getdata-sidebar .clearer {
+.cypher-sidebar .clearer {
   clear: both;
 }
 
@@ -1450,14 +1450,14 @@
 
 /**** Top tab section ****/
 
-.getdata-sidebar #tab-panel {
+.cypher-sidebar #tab-panel {
   height: 28px;
   width: 320px;
   float: left;
   background: #131313;
 }
 
-.getdata-sidebar #tab-panel .tab {
+.cypher-sidebar #tab-panel .tab {
   width: 150px;
   height: 15px;
   display: table;
@@ -1478,23 +1478,23 @@
   cursor: pointer;
 }
 
-.getdata-sidebar #tab-panel .tab.active {
+.cypher-sidebar #tab-panel .tab.active {
  background: #222222; 
  color: #FFFFFF;
 }
 
-.getdata-sidebar #tab-panel #manual_selection_tab.tab {
+.cypher-sidebar #tab-panel #manual_selection_tab.tab {
   margin-left: 10px;
   border-radius: 5px 0px 0px 0px;  
 }
 
-.getdata-sidebar #tab-panel #recommended_column_tab.tab {
+.cypher-sidebar #tab-panel #recommended_column_tab.tab {
   margin-right: 10px;
   border-radius: 0px 5px 0px 0px;
 
 }
 
-.getdata-sidebar #tab-panel #recommended_column_tab.tab #column_rec_num {
+.cypher-sidebar #tab-panel #recommended_column_tab.tab #column_rec_num {
   background: #131313;
 
   font-family: "Open Sans";
@@ -1521,7 +1521,7 @@
 
 
 /*** Pagination section ***/
-.getdata-sidebar #add_pagination {
+.cypher-sidebar #add_pagination {
   width: 40px;
   height: 16px;
   cursor: pointer;
@@ -1530,23 +1530,23 @@
   /*display: none !important;*/
 }
 
-.getdata-sidebar #add_pagination.dormant {
+.cypher-sidebar #add_pagination.dormant {
   width: 48px;
   height: 24px;  
   padding:  4px;
 }
 
-.getdata-sidebar #add_pagination #add_pagination_icon {
+.cypher-sidebar #add_pagination #add_pagination_icon {
   pointer-events: none;
 }
 
-.getdata-sidebar #add_pagination.dormant #add_pagination_icon {
+.cypher-sidebar #add_pagination.dormant #add_pagination_icon {
   background-image: url("chrome-extension://__MSG_@@extension_id__/images/pagination-inactive.svg");    
   width: 40px;
   height: 16px;    
 }
 
-.getdata-sidebar #add_pagination.dormant:hover {
+.cypher-sidebar #add_pagination.dormant:hover {
   width: 48px;
   height: 24px;  
   padding:  0px;  
@@ -1555,14 +1555,14 @@
 }
 
 
-.getdata-sidebar #add_pagination.dormant:hover #add_pagination_icon {
+.cypher-sidebar #add_pagination.dormant:hover #add_pagination_icon {
   background-image: url("chrome-extension://__MSG_@@extension_id__/images/pagination-active.svg");  
   width: 48px;
   height: 24px;    
 }
 
 
-.getdata-sidebar #add_pagination.selecting {
+.cypher-sidebar #add_pagination.selecting {
   width: 48px;
   height: 24px;  
   padding:  0px;  
@@ -1570,13 +1570,13 @@
   border-radius: 3px;    
 }
 
-.getdata-sidebar #add_pagination.selecting #add_pagination_icon {
+.cypher-sidebar #add_pagination.selecting #add_pagination_icon {
   background-image: url("chrome-extension://__MSG_@@extension_id__/images/pagination-active.svg");  
   width: 48px;
   height: 24px;    
 }
 
-.getdata-sidebar #add_pagination.selected {
+.cypher-sidebar #add_pagination.selected {
   width: 48px;
   height: 24px;  
   padding:  0px;   
@@ -1584,13 +1584,13 @@
   border-radius: 3px;    
 }
 
-.getdata-sidebar #add_pagination.selected #add_pagination_icon {
+.cypher-sidebar #add_pagination.selected #add_pagination_icon {
   background-image: url("chrome-extension://__MSG_@@extension_id__/images/pagination-active.svg");  
   width: 48px;
   height: 24px;    
 }
 
-.getdata-sidebar #krake-tooltip {
+.cypher-sidebar #krake-tooltip {
   border-radius: 4px;
   padding: 14px 13px 12px 12px;
   background-color: #ffffff;

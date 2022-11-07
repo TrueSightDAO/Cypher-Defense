@@ -19,6 +19,7 @@
   display: table;
   pointer-events: none;
   outline: none;
+  margin
 
 }
 
@@ -52,6 +53,7 @@
 #deactive .section_title {
   font-size: 20px;
   margin-bottom: 20px;
+
 }
 
 #deactive .button-holder {
@@ -86,13 +88,13 @@
   display: inline-block;
 }
 
-#blacklisted .span4 {
+#blacklisted .person_row {
   margin-bottom: 10px;
 }
 
-#blacklisted .span4.section_title {
+#blacklisted .section_title {
   font-size: 20px;
-  margin-bottom: 20px;
+  margin-bottom: 40px;
 }
 
 h3 {
@@ -116,6 +118,10 @@ h3 {
 }
 
 #popup_body {
+  padding: 10px;
+}
+
+#popup_body span .row {
   padding: 10px;
 }
 

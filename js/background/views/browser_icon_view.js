@@ -1,7 +1,11 @@
 var BrowserIconView = function() {}
 
-BrowserIconView.activate = function() {
+BrowserIconView.blacklisted = function() {
   Env.setIcon(CONFIG["active_icon"]);
+}
+
+BrowserIconView.verified = function() {
+  Env.setIcon(CONFIG["validated_icon"]);
 }
 
 BrowserIconView.deactivate = function() {

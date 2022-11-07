@@ -22,71 +22,38 @@
         </div>
       </div>
 
-      <div class="row options" id="blacklisted">
-        <div class="span4 section_title">
+      <div class="options" id="blacklisted">
+        <div class="section_title">
           This site has been blacklisted
         </div>
-        <div class="span4">
+        <div class="person_row">
           <div class="status_label">Flagged by </div>
           <div class="content">
             <img id="blacklist_flagger_profile" class="profile_image"> <span id="blacklist_flagger_name"></span>
           </div>
         </div>
-        <div class="span4">
+        <div class="person_row">
           <div class="status_label">Confirmed by</div> 
           <div class="content">
             <img id="blacklist_validator_profile" class="profile_image"> <span id="blacklist_validator_name"></span>
           </div> 
         </div>
-        <div class="span2 alignright">
-          <a href='https://www.facebook.com/GetData.IO' target="_blank">       
-            <i class="fa fa-info-circle" aria-hidden="true" title="Download CSV"></i> 
-            Help/Feedback
-          </a>                                
-        </div>        
-
       </div>
 
-      <div class="clearer header_separation"></div>
-
-      <div class="row">
-        <div id="count_holder" class="span4">
-          <b>Total records gathered: <span id="results_count">0</span></b>
+      <div class="row options" id="validated">
+        <div  class="span4">
+          Validated by <span>Person A</span>
         </div>
-        <div class="span5 alignright">
-          <a id="download-csv" class="btn download-btn" download_format="csv" disabled>
-            <i class="fa fa-cloud-download" aria-hidden="true" title="Download CSV"></i> 
-            save as CSV
-          </a>
-          <a  id='download-json' class='btn download-btn' download_format="json" disabled>
-            <i class="fa fa-cloud-download" aria-hidden="true" title="Download JSON"></i>
-            save as JSON
-          </a>        
-          <button id="run_crawler" class="btn btn-primary">Run Crawler</button>
+        <div class="span4">
+          Confirmed by <span>Person B</span>
         </div>
       </div>
 
-
-      <div id="final_results_holder">
-        <div id="empty_message">
-          <h4>Not data shown yet</h4>
-        </div>
-      </div>  
     </div>
 
 
   </body>
   <footer>
-    <!-- Begin Inspectlet Embed Code -->
-    <script type="text/javascript" id="inspectletjs">
-    (function() {
-    window.__insp = window.__insp || [];
-    __insp.push(['wid', 1964047413]);
-    var ldinsp = function(){ if(typeof window.__inspld != "undefined") return; window.__inspld = 1; var insp = document.createElement('script'); insp.type = 'text/javascript'; insp.async = true; insp.id = "inspsync"; insp.src = ('https:' == document.location.protocol ? 'https' : 'http') + '://cdn.inspectlet.com/inspectlet.js?wid=1964047413&r=' + Math.floor(new Date().getTime()/3600000); var x = document.getElementsByTagName('script')[0]; x.parentNode.insertBefore(insp, x); };
-    setTimeout(ldinsp, 0);
-    })();
-    </script>
-    <!-- End Inspectlet Embed Code -->
 
     <link href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">    
     <link rel="stylesheet" media="screen" href="/css/bootstrap.min.css" />
