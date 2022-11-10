@@ -14,6 +14,17 @@
         "js/lib/jquery_ui_1.10.3.js",        
         "js/lib/handlebars.js",
         "js/lib/handlebar-helpers.js",
+
+        "js/content/templates/sidebar.hbs.precompiled.js",
+        "js/content/templates/column.hbs.precompiled.js",
+        "js/content/templates/community_icon.hbs.precompiled.js",
+        "js/content/templates/listing_panel_column.hbs.precompiled.js",
+        "js/content/templates/listing_panel_recommended_column.hbs.precompiled.js",
+        "js/content/templates/recommended_panel_column.hbs.precompiled.js",
+        "js/content/templates/introduction_modal.hbs.precompiled.js",
+        "js/content/templates/notification_panel.hbs.precompiled.js",
+        "js/content/templates/notification_save_panel.hbs.precompiled.js",
+
         "js/lib/underscore-min.js",
         "js/lib/backbone-min.js", 
         "js/lib/bootstrap.bundle.min.js",        
@@ -87,15 +98,7 @@
   "web_accessible_resources": [{
     "matches": ["<all_urls>"],
     "resources": [
-      "js/content/templates/sidebar.hbs",
-      "js/content/templates/column.hbs",
-      "js/content/templates/community_icon.hbs",
-      "js/content/templates/listing_panel_column.hbs",
-      "js/content/templates/listing_panel_recommended_column.hbs",
-      "js/content/templates/recommended_panel_column.hbs",
-      "js/content/templates/introduction_modal.hbs",
-      "js/content/templates/notification_panel.hbs",
-      "js/content/templates/notification_save_panel.hbs",
+      
       "images/cypher_icon_16_warning.png",
       "images/cypher_icon_128_warning.png",
       "images/logo-long.svg",

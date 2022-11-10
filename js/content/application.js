@@ -185,6 +185,7 @@ Application.activate = function() {
 
 Application.activateBlocking = function() {
   Application.should_block = true;
+  Application.activate();
 }
 
 /** 
@@ -203,19 +204,17 @@ Application.refreshRecommendations = function() {
 **/
 Application.loadHandleBarTemplates = function(callback) {
   var template_name = Application.handle_bars.pop();
+  Application.templates[template_name] = Handlebars.templates[template_name + ".hbs"]
 
-  Env.loadTemplate(template_name, function(html_text) {
-    Application.templates[template_name] = Handlebars.compile(html_text);
+  if(Application.handle_bars.length > 0) {
+    Application.loadHandleBarTemplates(callback);
 
-    if(Application.handle_bars.length > 0) {
-      Application.loadHandleBarTemplates(callback);
+  } else {
+    console.log((Date.now() - Application.sessionStartTime) + " : loaded all handle bar templates");
+    callback && callback();
+    
+  }
 
-    } else {
-      console.log((Date.now() - Application.sessionStartTime) + " : loaded all handle bar templates");
-      callback && callback();
-      
-    }
-  });
 }
 
 Application.getInfo = function(payload, callback) {

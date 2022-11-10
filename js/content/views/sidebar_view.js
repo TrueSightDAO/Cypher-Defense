@@ -93,6 +93,7 @@ var SideBarView = Backbone.View.extend({
     var self = this;
     var template = self.template();
     
+    debugger;
     self.$el.html(template({
       domain: self.parent_tab.tab.attributes.domain,
       datasource_num: self.parent_tab.tab.attributes.datasource_count,
