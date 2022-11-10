@@ -2,9 +2,8 @@ var Domain = function() {
 }
 
 Domain.status = function(url) {
-  var tmp   = document.createElement ('a');
-  tmp.href  = url;
-  var the_domain = tmp.hostname;
+  var url_obj = new URL(url)
+  var the_domain = url_obj.hostname;
 
   var blacklisting = DOMAINS.filter(function(domain_obj) {
     return domain_obj.value == the_domain;
@@ -19,9 +18,8 @@ Domain.status = function(url) {
 }
 
 Domain.details = function(url) {
-  var tmp   = document.createElement ('a');
-  tmp.href  = url;
-  var the_domain = tmp.hostname;
+  var url_obj = new URL(url)
+  var the_domain = url_obj.hostname;
 
   var blacklisting = DOMAINS.filter(function(domain_obj) {
     return domain_obj.value == the_domain;

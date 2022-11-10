@@ -80,6 +80,7 @@ Env.fetchCurrentTab = function(callback) {
   });  
 }
 
+// popup
 Env.filePath = function(file_path) {
   return chrome.extension.getURL(file_path);
 }

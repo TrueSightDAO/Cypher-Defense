@@ -153,8 +153,10 @@ Application.handleBarTemplatesLoaded = function() {
 **/
 Application.renderTabView = function() {
   console.log("Rendering Tab View");
+  debugger;
   Application.tab_view = new TabView();  
 
+  console.log("Checking if should render tab")
   if(Application.should_block) {
     Application.activate();
   }
@@ -183,8 +185,6 @@ Application.activate = function() {
 
 Application.activateBlocking = function() {
   Application.should_block = true;
-  // Application.tab_view = Application.tab_view || new TabView();  
-  // Application.tab_view.render();
 }
 
 /** 

@@ -12,15 +12,18 @@ Env.getVersion = function() {
 }
 
 Env.imagePath = function(img_path) {
-  return "'" + chrome.extension.getURL(img_path) + "'";
+  // return "'" + chrome.extension.getURL(img_path) + "'";
+  return "'" + chrome.runtime.getURL(img_path) + "'";
+
 }
 
+// content
 Env.filePath = function(file_path) {
-  return chrome.extension.getURL(file_path);
+  return chrome.runtime.getURL(file_path);
 }
 
 Env.registerListener = function(listener) {
- chrome.extension.onMessage.addListener(listener); 
+ chrome.runtime.onMessage.addListener(listener); 
 }
 
 Env.loadTemplate = function(template_name, callback) {

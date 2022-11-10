@@ -375,6 +375,7 @@ var __module6__ = (function(__dependency1__, __dependency2__, __dependency3__) {
   __exports__.checkRevision = checkRevision;// TODO: Remove this line and break up compilePartial
 
   function template(templateSpec, env) {
+    debugger;
     if (!env) {
       throw new Exception("No environment passed to template");
     }
@@ -1939,6 +1940,7 @@ var __module11__ = (function(__dependency1__, __dependency2__) {
         source = this.compilerInfo()+source;
       }
 
+      debugger;
       if (asObject) {
         params.push(source);
 
