@@ -1940,10 +1940,9 @@ var __module11__ = (function(__dependency1__, __dependency2__) {
         source = this.compilerInfo()+source;
       }
 
-      debugger;
+      //GARY: TO DEAL WITH
       if (asObject) {
         params.push(source);
-
         return Function.apply(this, params);
       } else {
         var functionSource = 'function ' + (this.name || '') + '(' + params.join(',') + ') {\n  ' + source + '}';
