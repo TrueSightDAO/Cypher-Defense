@@ -128,7 +128,6 @@ var TabView = Backbone.View.extend({
 
   render: function() {
     var self = this;
-    debugger;
     if(!self.sidebar_view) {
       Application.sidebar_view = self.sidebar_view = new SideBarView({
         parent_tab: self

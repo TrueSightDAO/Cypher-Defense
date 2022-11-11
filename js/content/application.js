@@ -153,7 +153,6 @@ Application.handleBarTemplatesLoaded = function() {
 **/
 Application.renderTabView = function() {
   console.log("Rendering Tab View");
-  debugger;
   Application.tab_view = new TabView();  
 
   console.log("Checking if should render tab")

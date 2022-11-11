@@ -93,7 +93,6 @@ var SideBarView = Backbone.View.extend({
     var self = this;
     var template = self.template();
     
-    debugger;
     self.$el.html(template({
       domain: self.parent_tab.tab.attributes.domain,
       datasource_num: self.parent_tab.tab.attributes.datasource_count,
@@ -101,12 +100,7 @@ var SideBarView = Backbone.View.extend({
       show_datasource_recommendations: self.parent_tab.tab.attributes.datasource_count > 0,
       loading_message: self.loadingMessage()
     }));
-    // self.displayCommunity();
-    // self.renderDisplayMode();
-    // self.renderPaginationSection();
-    // self.onResize();
-    // self.monitorAndRefreshColumnCounts();
-    // console.log((Date.now() - Application.sessionStartTime) + " : rendered sidebar view");    
+    self.$el.addClass(self.supported_modes["empty-mode"]);
     return self;
   },
 
@@ -504,6 +498,7 @@ var SideBarView = Backbone.View.extend({
     self.setEmptyModeCopyrighting();    
     self.setListingHeaderCopyrighting();
     self.setTabsDisplayMode();
+
     
     if(self.loading_mode) {
       self.$el.addClass(self.supported_modes["loading-mode"]);
