@@ -53,13 +53,10 @@
         "js/content/views/tutorial_view.js",        
         "js/content/application.js"
       ],
-      "matches": [ "http://*/*", "https://*/*" ],
       "run_at": "document_end"
   } ],  
   "background": {
-      // "type": "module",
       "service_worker": "js/background/application.js",
-      // "service_worker": "js/background/file1.js",
       "xscripts": [ 
         "blacklist/domains.js",   
         "blacklist/people.js",   
@@ -164,9 +161,7 @@
         "js/background/controllers/krecommended_columns_controller.js",
         "js/background/application.js"
     ]
-  }]
-
-   ,
+  }],
    "icons": {
       "128": "images/cypher_icon_128_warning.png",
       "16": "images/cypher_icon_16_warning.png",
