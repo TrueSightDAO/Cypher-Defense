@@ -35,6 +35,7 @@ Application.path_trigger_start_pattern = new RegExp(CONFIG.server_host + CONFIG.
   Executes to load all environmental variables
 **/
 Application.init = function() {
+  Application.hideInstallButton();
   Application.handlebar_loaded = false;
   // When not on Krake domain
   if(Application.shouldRenderSubViews()) {
@@ -44,6 +45,13 @@ Application.init = function() {
     Application.loadHandleBarTemplates(Application.handleBarTemplatesLoaded);
     Env.registerListener(Application.msgEvent);
   } 
+}
+
+Application.hideInstallButton = function() {
+  $("#cypher_chrome_extension_install_button").removeClass("btn-primary");
+  $("#cypher_chrome_extension_install_button").addClass("btn-default");
+  $("#cypher_chrome_extension_install_button").attr("disabled", true);
+  $("#cypher_chrome_extension_install_button").html("Chrome Extension Installed");
 }
 
 /**

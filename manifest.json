@@ -175,8 +175,6 @@
    "short_name": "Cypher",
    "description": "Decentralized protection against web3 scams and phishing attacks",
    "permissions": [ 
-                    "cookies", 
-                    "webRequest",
                     "tabs",
                     "scripting", 
                     "activeTab"

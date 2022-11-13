@@ -13,6 +13,7 @@ Env.getVersion = function() {
 }
 
 Env.setIcon = function(img_path) {
+  debugger;
   chrome.action.setIcon({path:img_path});
 }
 
@@ -93,15 +94,6 @@ Env.fetchHostName = function(url) {
   var temp_a  = document.createElement('a');
   temp_a.href = url;
   return temp_a.hostname.replace(/www./i, '').toLowerCase();
-}
-
-Env.setInstalledCookie = function() {
-  chrome.cookies.set({
-    "name":"extension_installed",
-    "url": CONFIG["server_host"],
-    "value": Env.getVersion()
-  },function (cookie){
-  });  
 }
 
 /**

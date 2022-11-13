@@ -139,7 +139,6 @@ Application.refreshEvent = function(tabId, changeInfo, tab) {
 
 Application.onInstall = function(details) {
   if(details.reason == "install"){
-    Env.setInstalledCookie();    
     Env.fetchCurrentTab(function(tab) {
       Env.redirectTo(tab.id, "https://truesight.me/dao/chrome_installed");
     })
