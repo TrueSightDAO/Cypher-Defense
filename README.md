@@ -49,3 +49,27 @@ Allow members to flag and get warned on any of the following
   }
 ]
 ```
+
+## Pre-requisites
+utilizes handlebar
+
+Installing handlbars
+```
+npm install -g handlebars
+```
+
+Precompiles the templates
+```
+cd js/content/templates
+
+handlebars sidebar.hbs -f sidebar.hbs.precompiled.js
+handlebars column.hbs -f column.hbs.precompiled.js
+handlebars community_icon.hbs -f community_icon.hbs.precompiled.js
+handlebars listing_panel_column.hbs -f listing_panel_column.hbs.precompiled.js
+handlebars listing_panel_recommended_column.hbs -f listing_panel_recommended_column.hbs.precompiled.js
+handlebars recommended_panel_column.hbs -f recommended_panel_column.hbs.precompiled.js
+handlebars introduction_modal.hbs -f introduction_modal.hbs.precompiled.js
+handlebars notification_panel.hbs -f notification_panel.hbs.precompiled.js
+handlebars notification_save_panel.hbs -f notification_save_panel.hbs.precompiled.js
+
+```

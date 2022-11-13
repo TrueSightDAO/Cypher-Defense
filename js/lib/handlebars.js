@@ -1730,6 +1730,7 @@ var __module10__ = (function(__dependency1__) {
     }
 
     var compiled;
+    debugger;
 
     function compileInput() {
       var ast = env.parse(input);
@@ -1939,9 +1940,9 @@ var __module11__ = (function(__dependency1__, __dependency2__) {
         source = this.compilerInfo()+source;
       }
 
+      //GARY: TO DEAL WITH
       if (asObject) {
         params.push(source);
-
         return Function.apply(this, params);
       } else {
         var functionSource = 'function ' + (this.name || '') + '(' + params.join(',') + ') {\n  ' + source + '}';

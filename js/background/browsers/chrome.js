@@ -1,3 +1,4 @@
+
 /**
   Chrome environment specific functions and event attachments
 **/
@@ -12,7 +13,8 @@ Env.getVersion = function() {
 }
 
 Env.setIcon = function(img_path) {
-  chrome.browserAction.setIcon({path:img_path});
+  debugger;
+  chrome.action.setIcon({path:img_path});
 }
 
 Env.registerListener = function(event_type, listener) {
@@ -24,7 +26,7 @@ Env.registerListener = function(event_type, listener) {
       chrome.tabs.onUpdated.addListener(listener);
       break;
     case "browser_action_onclick":
-      chrome.browserAction.onClicked.addListener(listener);
+      chrome.action.onClicked.addListener(listener);
       break;
     case "tabs_on_activate":
       chrome.tabs.onActivated.addListener(listener);
@@ -58,7 +60,7 @@ Env.getCookies = function(domain, callback) {
 }
 
 Env.setIconText = function(text) {
-  chrome.browserAction.setBadgeText({
+  chrome.action.setBadgeText({
     text: text
   });
 }
@@ -83,6 +85,7 @@ Env.closeTab = function(tab_id) {
   chrome.tabs.remove(tab_id);
 }
 
+// background
 Env.filePath = function(file_path) {
   return chrome.extension.getURL(file_path);
 }
@@ -91,15 +94,6 @@ Env.fetchHostName = function(url) {
   var temp_a  = document.createElement('a');
   temp_a.href = url;
   return temp_a.hostname.replace(/www./i, '').toLowerCase();
-}
-
-Env.setInstalledCookie = function() {
-  chrome.cookies.set({
-    "name":"extension_installed",
-    "url": CONFIG["server_host"],
-    "value": Env.getVersion()
-  },function (cookie){
-  });  
 }
 
 /**
@@ -115,3 +109,4 @@ try {
 if(chrome.runtime && !chrome.runtime.onMessage) {
   chrome.runtime.onMessage = chrome.extension.onMessage
 } 
+

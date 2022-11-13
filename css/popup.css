@@ -125,6 +125,15 @@ h3 {
   padding: 10px;
 }
 
+#popup_body .invite-holder {
+  position: fixed;
+  width: 300px;
+  height: 30px;
+  text-align: center;
+  left: 0px;
+  bottom: 0px;
+}
+
 pre#recipe {
     overflow-x: scroll;
 }
