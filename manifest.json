@@ -173,10 +173,10 @@
    "name": "Cypher Defense",
    "author": "Gary Teh",
    "short_name": "Cypher",
-   "description": "Decentralized protection against web3 scams and phishing attacks",
+   "description": "Keeping the NFTs and Coins in your wallets safe from phishing attacks",
    "permissions": [ 
                     "tabs"
                   ],
     "host_permissions": ["<all_urls>"],
-    "version": "0.0.1"
+    "version": "0.0.2"
 }
