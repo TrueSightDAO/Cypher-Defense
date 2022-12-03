@@ -1,7 +1,9 @@
 var Application = {};
 
 Application.init = function() {
+  Application.setupForm();
   Application.fetchTabInfo();
+
 }
 
 Application.targetTabId = function() {
@@ -17,6 +19,10 @@ Application.targetPageId = function() {
       var o = t[n].split("=");
       if (decodeURIComponent(o[0]) == "page_id") return decodeURIComponent(o[1]) * 1;
   }
+}
+
+Application.setupForm = function() {
+  $("#flag_form").attr("action", Application.flagPath());
 }
 
 Application.fetchTabInfo = function() {
@@ -53,7 +59,7 @@ Application.fetchTabInfo = function() {
           break;
 
         default:
-          $("#flag_button").attr("href", "https://truesight.me/domains/flag?domain=" + tab.url);
+          $("#flagged_domain"). val(tab.url);
           $("#blacklisted").hide();
           $("#validated").hide();
           $("#deactive").show();
@@ -61,6 +67,10 @@ Application.fetchTabInfo = function() {
     });
   });  
   
+}
+
+Application.flagPath = function() {
+  return CONFIG["server_host"] + CONFIG["paths"]["flag_path"] 
 }
 
 Application.fetchData = function(recipe) {

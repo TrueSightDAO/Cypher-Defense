@@ -13,6 +13,7 @@ var FULL_CONFIG = {
     server_host:   "http://localhost:3000",
     blowfish_host:   "http://localhost:3000",
     paths: {
+      flag_path:        "/domains/flag",
       create_new_path:  "/data-sources/new",
       sign_in:          "/members/sign_in",
       sign_up:          "/members/sign_up",
@@ -42,9 +43,10 @@ var FULL_CONFIG = {
     active_icon:   "/images/cypher_icon_24_warning.png",
     inactive_icon: "/images/cypher_icon_24_disabled.png",
     validated_icon: "/images/cypher_icon_24_validated.png",
-    server_host:   "https://getdata.io",
+    server_host:   "https://truesight.me",
     blowfish_host:   "http://localhost:3000",
     paths: {
+      flag_path:        "/domains/flag",      
       create_new_path:  "/data-sources/new",    
       sign_in:          "/members/sign_in",
       sign_up:          "/members/sign_up",
