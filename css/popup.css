@@ -36,7 +36,7 @@
 
 
 #deactive {
-  text-align: center;
+  text-align: left;
 }
 
 #deactive .profile_image {
@@ -56,10 +56,27 @@
 
 }
 
-#deactive .button-holder {
+#deactive .form-holder {
   padding: 10px;
-  text-align: center;
+}
 
+#deactive .section_title {
+  text-align: center;
+}
+
+#deactive .form-holder #form_header {
+  padding-bottom: 10px;
+}
+
+#deactive .form-holder #flag_reason {
+  width: 100%;
+  margin-bottom: 20px;
+  height: 125px;
+  overflow: scroll;
+}
+
+#deactive .form-holder .button-holder {
+  text-align: center;
 }
 
 #deactive .span4 {
@@ -175,3 +192,4 @@ img.loading-gif {
 #count_holder {
   line-height: 30px;
 }
+

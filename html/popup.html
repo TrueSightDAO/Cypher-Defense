@@ -1,4 +1,6 @@
 <html>
+  <script type="text/javascript" src="/js/popup/browsers/chrome.js"></script>  
+  <script type="text/javascript" src="/js/config/config.js"></script>
   <body id="popup_doc">
     <div id="popup_header">
       Cypher Defense
@@ -14,10 +16,22 @@
         <div class="section_title">
           See something suspicious about this page?
         </div>        
-        <div class="button-holder">
-          <a href="" class="content btn-large btn-danger" target="_blank" id="flag_button">
-            Flag this page
-          </a>
+        <div class="form-holder">
+          <form method="post" id="flag_form" target="_blank">
+            
+            <div id="form_header">Tell us what do you found suspicious?</div>
+
+            <textarea id="flag_reason" name="description"></textarea>
+            <input type="hidden" name="url" id="flagged_url">
+            <input type="hidden" name="domain" id="flagged_domain">
+
+            <div class="button-holder">
+              <button type="submit" class="content btn-large btn-danger" id="flag_button">
+                Flag this page
+              </a>              
+            </div>
+
+          </form>
           
         </div>
       </div>
