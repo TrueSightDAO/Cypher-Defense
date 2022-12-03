@@ -59,7 +59,8 @@ Application.fetchTabInfo = function() {
           break;
 
         default:
-          $("#flagged_domain"). val(tab.url);
+          $("#flagged_url").val(tab.url);
+          $("#flagged_domain").val(tab.url);
           $("#blacklisted").hide();
           $("#validated").hide();
           $("#deactive").show();
