@@ -22,7 +22,7 @@ var SideBarView = Backbone.View.extend({
     "click #recommended_column_tab": "activateRecommendationsMode",
     "click #manual_selection_tab": "activateActiveMode",
 
-    "mousedown #getdata-header": "enableDragEvent",
+    // "mousedown #getdata-header": "enableDragEvent",
     "click #close-icon" : "deactiveEvent",
     "click #reset_column": "clearDomEvent",
     "change #required_attribute"     : "updateRequiredAttributeEvent"
@@ -110,6 +110,11 @@ var SideBarView = Backbone.View.extend({
       message = "It takes slightly longer the first time.";
     } 
     return message;
+  },
+
+  setReport: function(details) {
+    var self = this;
+    self.$el.find(".report-link").attr("href", details.report);
   },
 
 

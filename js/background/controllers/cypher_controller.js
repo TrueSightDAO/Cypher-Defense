@@ -11,8 +11,7 @@ CypherController.info = function(data_obj, tab_obj) {
     case "blacklisted":
       response["status"] = "blacklisted";
       var details = Domain.details(data_obj.url)
-      response["flagger"]     = details["flagger"];
-      response["validator"]   = details["validator"];
+      response["flaggers"]     = details["flaggers"];
       break;
 
     case "verified":

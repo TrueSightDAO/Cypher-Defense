@@ -173,7 +173,7 @@ Application.renderTabView = function() {
 /** 
   Activates the Application within this Window
 **/
-Application.activate = function() {
+Application.activate = function(details) {
   // When extension is activated before the handlebar templates are all loaded
   if(!Application.tab_view) {
     Application.to_activate = true;
@@ -183,16 +183,17 @@ Application.activate = function() {
     Application.to_activate = false;
     console.log("Activating Tab View");
     console.log((Date.now() - Application.sessionStartTime) + " : activating tab view");
-    Application.tab_view.activate().then(function(){
+    
+    Application.tab_view.activate(details).then(function(){
       console.log((Date.now() - Application.sessionStartTime) + " : activated tab view");
     });    
   }
   
 }
 
-Application.activateBlocking = function() {
+Application.activateBlocking = function(payload) {
   Application.should_block = true;
-  Application.activate();
+  Application.activate(payload.details);
 }
 
 /** 

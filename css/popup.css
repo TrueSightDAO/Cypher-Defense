@@ -85,11 +85,11 @@
 
 
 
-
-
-#blacklisted .profile_image {
-  width: 25px;
+#blacklisted .blacklist_flagger_profile {
+  width: 50px;
   border-radius: 25px;
+  float: left;
+  margin-right: 10px;
 }
 
 #blacklisted .status_label {
@@ -111,7 +111,17 @@
 
 #blacklisted .section_title {
   font-size: 20px;
+  margin-bottom: 10px;
+}
+
+#blacklisted .section_explainer {
+  font-size: 13px;
   margin-bottom: 40px;
+}
+
+#blacklisted .flagger_header {
+  margin-bottom: 20px;
+  font-size: 16;
 }
 
 h3 {

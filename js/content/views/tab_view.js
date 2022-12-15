@@ -99,13 +99,14 @@ var TabView = Backbone.View.extend({
   },
 
   /** Activates the DataGet **/
-  activate: function() {
+  activate: function(details) {
     console.log((Date.now() - Application.sessionStartTime) + " : activating tab view");
     var deferred  = $.Deferred();
     var self = this;
 
     self.render();    
     // self.respondToPageChanges();      
+    self.sidebar_view.setReport(details);
 
     if(!self.isRendered) { // prevents double binding issue within subviews
       self.load().then(
@@ -257,6 +258,7 @@ var TabView = Backbone.View.extend({
   },
 
   setPagePanelCoordinates: function(new_right, new_top) {
+    debugger;
     var self = this;
     self.sidebar_view.$el.css("right", new_right);
     self.sidebar_view.$el.css("top", new_top);    

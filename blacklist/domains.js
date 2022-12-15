@@ -1,3 +1,5 @@
+importScripts('/js/config/config.js');
+
 var DOMAINS = [
   {
     "type": "domain",
@@ -19,3 +21,12 @@ var DOMAINS = [
   }
 ]
 
+
+
+fetch(CONFIG["blacklisted_domains"]).then(function(server_response) {
+  return server_response.json();
+
+}).then(function (server_response) {
+  DOMAINS = server_response;
+  
+});

@@ -1,7 +1,9 @@
 .cypher-sidebar {
   position: fixed !important;
-  top: 20px;
-  right: 130px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
   z-index: 2147483640;
   width: 320px;
   height: 580px;
@@ -15,7 +17,6 @@
 
 /** Top bar **/
 .cypher-sidebar #getdata-header {
-  cursor: grab;
   width: 320px;  
   height: 40px;
   background: #131313;
@@ -990,24 +991,32 @@
 /** Empty panel section **/
 .cypher-sidebar .empty-panel .empty-icon {
   margin-left: 98px;
-  margin-top: 120px;  
-  margin-bottom: 50px;
+  margin-top: 50px;  
+  margin-bottom: 20px; 
   width: 128px;
   height: 128px;  
 
-  background-image: url("chrome-extension://__MSG_@@extension_id__/images/cypher_icon_128_warning.png");  
-}
-
-.cypher-sidebar .empty-panel.is-first .empty-icon {
-  margin-left: 98px;
-  margin-top: 120px; 
-  margin-bottom: 50px; 
-  width: 128px;
-  height: 128px;  
   background-image: url("chrome-extension://__MSG_@@extension_id__/images/cypher_icon_128_warning.png");  
 }
 
 .cypher-sidebar .empty-panel .empty-header {
+  margin-bottom: 30px;
+
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: bold;
+  font-size: 20px;
+  line-height: 22px;
+
+  align-items: center;
+  text-align: center;
+
+  color: #FFFFFF;
+
+
+}
+
+.cypher-sidebar .empty-panel .empty-subheader {
   margin-bottom: 10px;
 
   font-family: "Open Sans";
@@ -1024,7 +1033,7 @@
 
 }
 
-.cypher-sidebar .empty-panel .empty-subheader {
+.cypher-sidebar .empty-panel .empty-description {
 
   font-family: "Open Sans";
   font-style: normal;
@@ -1036,7 +1045,16 @@
   text-align: center;
 
   color: #BBBBBB;
+  margin-bottom: 50px;
 
+}
+
+.cypher-sidebar .empty-panel .button-holder a.report-link {
+  background: #F08F14;
+  color: #fff;
+  border-radius: 10px;
+  padding: 10px 20px;
+  cursor: pointer;
 }
 
 

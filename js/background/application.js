@@ -89,18 +89,18 @@ Application.tabEvent = function(action_info) {
       case "blacklisted":
         console.log("problem Tab id " + tab.id);
         BrowserIconView.blacklisted();
-        Env.sendMessage(tab.id, { method: "activateBlocking" }, function() {});
+        Env.sendMessage(tab.id, { method: "activateBlocking", args_array: [{ details: Domain.details(tab.url) }] }, function() {});
 
         // chrome.scripting.executeScript({
         //   target: {tabId: tab.id},
         //   files: ['/what.js'],
         // });
-        tid = tab.id;
-        chrome.tabs.sendMessage(tid, { method: "activateBlocking" }, function(response) {
-          console.log("line 100");
-          console.log(response);
-          // console.log(response.farewell);
-        });
+        // tid = tab.id;
+        // chrome.tabs.sendMessage(tid, { method: "activateBlocking",  args_array: [{ details: Domain.details(data_obj.url) }] }, function(response) {
+        //   console.log("line 100");
+        //   console.log(response);
+        //   // console.log(response.farewell);
+        // });
 
         break;
 
@@ -123,7 +123,7 @@ Application.refreshEvent = function(tabId, changeInfo, tab) {
     switch(Domain.status(tab.url)) {
       case "blacklisted":
         BrowserIconView.blacklisted();
-        Env.sendMessage(tab.id, { method: "activateBlocking" }, function() {});
+        Env.sendMessage(tab.id, { method: "activateBlocking", args_array: [{ details: Domain.details(tab.url) }]  }, function() {});
         break;
 
       case "verified":

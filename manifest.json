@@ -58,13 +58,13 @@
   "background": {
       "service_worker": "js/background/application.js",
       "xscripts": [ 
-        "blacklist/domains.js",   
-        "blacklist/people.js",   
-        "blacklist/urls.js",           
         "js/lib/jquery_1.9.1.min.js",      
         "js/background/browsers/chrome.js",      
         "js/config/config.js",
         "js/lib/mixpanel.js",
+        "blacklist/domains.js",   
+        "blacklist/people.js",   
+        "blacklist/urls.js",                   
         "js/lib/json_format.js",
         "js/background/models/domain.js",
         "js/background/models/kcookie.js",
