@@ -24,6 +24,7 @@ EC2 SSH **key pairs are regional** (they are not scoped per Availability Zone). 
 | Script | Purpose |
 |--------|---------|
 | `scripts/aws/delete_ec2_keypair_all_regions.sh` | Deletes a named EC2 key pair in **every region** where it exists. |
+| `scripts/aws/terminate_ec2_by_launch_keypair.py` | Lists or terminates EC2 instances by **launch-time key pair name** across regions, or by **`--instance-id`** (scans all regions). Loads repo-root **`.env`**. Requires `boto3` and `python-dotenv`. |
 
 Example:
 
@@ -31,11 +32,11 @@ Example:
 cd /path/to/Cypher-Defense
 cp .env.example .env   # once, then edit with real values (do not commit)
 ./scripts/aws/delete_ec2_keypair_all_regions.sh buatbelisdfgmsobilbaim
+
+pip install boto3 python-dotenv
+python3 scripts/aws/terminate_ec2_by_launch_keypair.py
+python3 scripts/aws/terminate_ec2_by_launch_keypair.py --instance-id i-0123456789abcdef0 --execute
 ```
-
-Related automation in **`market_research`** (still valid for EC2 instance sweeps):
-
-- `market_research/scripts/terminate_ec2_by_launch_keypair.py` — finds instances by **launch-time key pair name** across regions; loads **`Cypher-Defense/.env` first**, then `market_research/.env`.
 
 ### Incident write-ups
 
