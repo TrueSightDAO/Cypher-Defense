@@ -3,6 +3,45 @@
 ## Introduction 
 This is a project to help protect DAO members from the prevalent scam, impersonation and phishing attacks that are happening in the Web3 space
 
+This repository is also the **home for AWS account hygiene and incident-response helpers** (shell scripts under `scripts/aws/`, and dated write-ups under `docs/incidents/`). Phishing tooling and cloud abuse are different problems, but both belong under “defense” for the workspace.
+
+---
+
+## AWS account cleanup (scripts)
+
+EC2 SSH **key pairs are regional** (they are not scoped per Availability Zone). Cleanup scripts therefore iterate **AWS Regions**, not individual AZs.
+
+### Prerequisites
+
+- AWS CLI v2 installed and on `PATH`.
+- Credentials in **`./.env`** at the repo root (never commit — see **`.gitignore`** and **`.env.example`**). Supported variable names:
+  - `AWS_KEY` + `AWS_SECRET`, or
+  - `AWS_ACCESS_KEY_ID` + `AWS_SECRET_ACCESS_KEY`
+- Prefer **least-privilege IAM** over root keys. Root keys should be an emergency-only path.
+
+### Scripts
+
+| Script | Purpose |
+|--------|---------|
+| `scripts/aws/delete_ec2_keypair_all_regions.sh` | Deletes a named EC2 key pair in **every region** where it exists. |
+
+Example:
+
+```bash
+cd /path/to/Cypher-Defense
+cp .env.example .env   # once, then edit with real values (do not commit)
+./scripts/aws/delete_ec2_keypair_all_regions.sh buatbelisdfgmsobilbaim
+```
+
+Related automation in **`market_research`** (still valid for EC2 instance sweeps):
+
+- `market_research/scripts/terminate_ec2_by_launch_keypair.py` — finds instances by **launch-time key pair name** across regions; loads **`Cypher-Defense/.env` first**, then `market_research/.env`.
+
+### Incident write-ups
+
+See **`docs/incidents/`** for dated analyses (e.g. AWS Trust & Safety reports, CloudTrail findings, corrective actions).
+
+---
 
 ## Use cases
 Allow members to flag and get warned on any of the following

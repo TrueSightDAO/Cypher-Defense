@@ -4,3 +4,12 @@ node_modules/*/**
 node_modules/
 .DS_Store
 dump.rdb
+
+# Secrets and local AWS / IR material (never commit)
+.env
+.env.*
+!.env.example
+*.pem
+*.ppk
+secrets/
+credentials/
