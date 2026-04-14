@@ -13,3 +13,5 @@ dump.rdb
 *.ppk
 secrets/
 credentials/
+__pycache__/
+*.py[cod]

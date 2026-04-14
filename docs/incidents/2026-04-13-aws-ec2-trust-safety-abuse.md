@@ -69,7 +69,7 @@ These are the actions we recommend documenting in replies to AWS Trust & Safety:
 Going forward, **AWS incident-response credentials and cleanup scripts** should live under **`Cypher-Defense/`**:
 
 - Local secrets: **`Cypher-Defense/.env`** (gitignored).
-- Scripts: **`Cypher-Defense/scripts/aws/`** (safe to commit).
+- Scripts: **`Cypher-Defense/scripts/aws/`** (safe to commit), including **`terminate_ec2_by_launch_keypair.py`** (`--instance-id` for a specific instance across regions) and **`delete_ec2_keypair_all_regions.sh`**.
 
 **`market_research/.env`** should remain for marketing / research automation keys only, not long-lived cloud admin credentials.
 
