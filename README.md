@@ -42,6 +42,10 @@ python3 scripts/aws/terminate_ec2_by_launch_keypair.py --instance-id i-012345678
 
 See **`docs/incidents/`** for dated analyses (e.g. AWS Trust & Safety reports, CloudTrail findings, corrective actions).
 
+### Formal replies to AWS (account / abuse notices)
+
+See **`docs/aws-reports/`** for **shareable** write-ups you can attach or paste when replying to AWS (case IDs, remediation checklist, suggested email body). Replace bracketed placeholders with your actual completion times before sending.
+
 ---
 
 ## Use cases
