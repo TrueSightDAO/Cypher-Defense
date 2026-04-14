@@ -46,6 +46,10 @@ See **`docs/incidents/`** for dated analyses (e.g. AWS Trust & Safety reports, C
 
 See **`docs/aws-reports/`** for **shareable** write-ups you can attach or paste when replying to AWS (case IDs, remediation checklist, suggested email body). Replace bracketed placeholders with your actual completion times before sending.
 
+### Member briefings (plain language, internal)
+
+See **`docs/members/`** for short explainers **for TrueSight DAO members** who are not cloud operators — for example the [AWS account incident member briefing](docs/members/2026-04-14-aws-account-incident-member-briefing.md), which links to the formal AWS response document and to a **PDF copy** of the notice under `docs/aws-reports/attachments/`.
+
 ---
 
 ## Use cases

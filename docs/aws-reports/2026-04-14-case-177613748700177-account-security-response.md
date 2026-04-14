@@ -4,6 +4,8 @@
 **Support / case reference (from customer email):** `177613748700177`  
 **Related internal incident notes:** [`docs/incidents/2026-04-13-aws-ec2-trust-safety-abuse.md`](../incidents/2026-04-13-aws-ec2-trust-safety-abuse.md) (EC2 / CloudTrail detail)
 
+**Plain-language briefing for DAO members:** [`docs/members/2026-04-14-aws-account-incident-member-briefing.md`](../members/2026-04-14-aws-account-incident-member-briefing.md)
+
 This document is intended to be **shared with AWS** (as an attachment or pasted summary) after you complete the items in **§2** that only you can confirm in the AWS console (root password change time, MFA enrollment time, etc.). Fill bracketed placeholders before sending.
 
 ---
