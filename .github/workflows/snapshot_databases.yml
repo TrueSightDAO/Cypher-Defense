@@ -1,0 +1,25 @@
+name: Monthly DB Snapshot
+
+on:
+  schedule:
+    - cron: "0 2 1 * *"   # 02:00 UTC on the 1st of every month
+  workflow_dispatch:        # allow manual trigger from GitHub UI
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install boto3
+
+      - name: Create EBS snapshots
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.CYPHER_DEFENCE_AWS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CYPHER_DEFENCE_AWS_SECRET }}
+        run: python3 scripts/aws/snapshot_databases.py --execute
