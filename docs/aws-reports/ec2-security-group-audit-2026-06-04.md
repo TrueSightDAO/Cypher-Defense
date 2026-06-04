@@ -84,7 +84,7 @@ Replace the shared, wide-open `default` SG with **role-scoped SGs that reference
 
 | New SG | Inbound rule | Source | Bind on (role → cattle/pet) |
 |---|---|---|---|
-| `tsd-admin` | 22/tcp **+ 2812/tcp (Monit)** | `<ADMIN_CIDR>` (your IP/VPN) — or 0 SSH inbound if SSM is enabled, but **2812 must stay reachable from admin** | **every** instance (LT for cattle, ENI for pets) |
+| `tsd-admin` | **22/tcp + 2202/tcp** (SSH — some hosts run sshd on 2202, not 22) **+ 2812/tcp (Monit)** | `<ADMIN_CIDR>` (your IP/VPN) — or 0 SSH inbound if SSM is enabled, but **2812 must stay reachable from admin** | **every** instance (LT for cattle, ENI for pets) |
 | `tsd-web-public` | 80, 443/tcp | `0.0.0.0/0` (+ `::/0`) | nginx web pets: `krake_nginx`, `seni_ror_200250915` |
 | `tsd-app` | app backends — dao_protocol 8010, puma 3002, uvicorn 8000, Rails 3000, krake webhook port | `tsd-web-public` + localhost (SG ref / 127.0.0.1) — **not world** | app pets (`dao_protocol_nelanco`, `seni_ror_200250915`) + cattle `krake_ror` (LT), `krake_sk_webhook` (LT) |
 | `tsd-redis` | 6379/tcp | `tsd-app` + `tsd-worker` (SG refs) | Redis pets: `GETDATA_REDIS`, `seni_redis_2`; cattle `GETDATA_CACHE` (LT getdata_cacher) |
@@ -94,6 +94,8 @@ Replace the shared, wide-open `default` SG with **role-scoped SGs that reference
 **Observed listening ports (live `ss -tlnp`, 2026-06-04 — sample):**
 - `dao_protocol_nelanco`: 22, **2812 (monit, 0.0.0.0)**, 8010 (FastAPI, 0.0.0.0). → 8010 should be `tsd-app` (from Edgar/nginx only), not world.
 - `seni_ror_200250915` (Edgar): 22, **2812 (monit, 0.0.0.0)**, 80/443 (nginx, public), 3002 (puma, 0.0.0.0), 8000 (uvicorn, 0.0.0.0), 5432 (postgres, **127.0.0.1 — already localhost-only ✓**). → 80/443 public; 3002/8000 restrict to localhost/`tsd-app`; Postgres already safe.
+
+**SSH ports (from `~/.ssh/config`):** all sampled hosts use **22 except `krake_nginx` (`krake_ng`) → 2202**; the `explorya` bastion entry is also 2202. Some config IPs are stale (dynamic public IPs), so confirm each host's real `sshd` `Port` at execution. `tsd-admin` therefore allows both 22 and 2202.
 
 **Monit is on `0.0.0.0:2812` on every host** — currently world-reachable through the open default SG. The new SGs **must keep 2812 open to `<ADMIN_CIDR>`** (it's the one-click restart UI) but close it to the world.
 
@@ -110,7 +112,7 @@ Replace the shared, wide-open `default` SG with **role-scoped SGs that reference
   - [ ] Obtain a **write-scoped** IAM key (the scanner keys are read-only): `ec2:CreateSecurityGroup`, `ec2:AuthorizeSecurityGroupIngress/Egress`, `ec2:RevokeSecurityGroupIngress`, `ec2:ModifyInstanceAttribute`, `ec2:ModifyNetworkInterfaceAttribute`.
   - [ ] Save this audit JSON as the pre-change snapshot (rollback reference).
 - [ ] **Phase 1 — Create the new SGs** (additive; zero runtime impact). Per region/account. Ensure `tsd-admin` includes **2812 (Monit)** + 22 from `<ADMIN_CIDR>`.
-- [ ] **Phase 2 — Confirm actual ports** per instance: `ss -tlnp` + read configs (`/etc/nginx/sites-enabled`, systemd `ExecStart`, app `.env`). Anything bound `127.0.0.1` needs no SG opening. Finalize the §4 map; resolve `krake_data` engine (Postgres vs Elasticsearch) and whether any ES :9200 exists.
+- [ ] **Phase 2 — Confirm actual ports** per instance: `ss -tlnp` + read configs (`/etc/nginx/sites-enabled`, systemd `ExecStart`, app `.env`, `sshd_config` `Port`). Anything bound `127.0.0.1` needs no SG opening. **Confirm the SSH port per host — some run sshd on 2202, not 22** — and make sure `tsd-admin` allows whichever each host uses before detaching the open SG (else you lock yourself out). Finalize the §4 map; resolve `krake_data` engine (Postgres vs Elasticsearch) and whether any ES :9200 exists.
 - [ ] **Phase 3 — Pilot on ONE pet** (lowest-risk, e.g. a standalone worker): attach new SG(s) **alongside** the open SG on its ENI, verify SSH/SSM + **Monit 2812** + the service, monitor ~30 min.
 - [ ] **Phase 4 — Roll out, by attachment type:**
   - **Pets** → attach role SG on the ENI alongside the open SG; verify; tier order workers → caches → DBs → app → web.
