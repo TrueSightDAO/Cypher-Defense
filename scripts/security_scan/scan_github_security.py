@@ -82,10 +82,14 @@ def scan_repo(repo_name):
     else:
         result["branch_protection"] = None
 
-    security = fetch_json(f"{GITHUB_API}/repos/{ORG}/{repo_name}/security-and-analysis")
-    if "error" not in security:
-        result["secret_scanning"] = security.get("secret_scanning", {}).get("status", "unknown")
-        result["dependabot"] = security.get("dependabot_security_updates", {}).get("status", "unknown")
+    # secret scanning / dependabot live in the `security_and_analysis` field of the repo
+    # object itself (already fetched above) — there is no /security-and-analysis endpoint, so
+    # the old call 404'd and left these null for every repo. The field is only present when
+    # the token has admin on the repo; otherwise leave None (renders as "?").
+    sa = repo_data.get("security_and_analysis") or {}
+    if sa:
+        result["secret_scanning"] = (sa.get("secret_scanning") or {}).get("status")
+        result["dependabot"] = (sa.get("dependabot_security_updates") or {}).get("status")
 
     return result
 
