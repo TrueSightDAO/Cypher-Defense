@@ -52,48 +52,76 @@ def run_scanner(name):
         return {"error": str(e)}
 
 
+# Ports normally exposed to the world on a public web server — not penalized.
+EXPECTED_PUBLIC_PORTS = {80, 443}
+
+
 def calculate_score(data):
-    """Calculate an overall security score 0-100 based on scan results."""
+    """Overall 0-100 score from scan results.
+
+    Design notes:
+      - Reads the compiler's actual section keys (aws_inventory / web_security /
+        github_security) — earlier this read aws/web/github and so always scored 100.
+      - Per-category caps so no single area can tank the whole score.
+      - Unknowns are NOT penalized: GitHub repos are only judged when we had admin
+        visibility (secret_scanning could be read), so a low-privilege PAT doesn't
+        produce a false F.
+    """
     score = 100
     deductions = []
 
-    aws = data.get("aws", [])
-    for account in aws if isinstance(aws, list) else []:
-        open_ports = account.get("totals", {}).get("open_ports", [])
-        if open_ports:
-            score -= len(open_ports) * 5
-            deductions.append(f"Open ports on {account.get('account')}: {open_ports}")
+    def category(raw, cap):
+        total = 0
+        for pts, msg in raw:
+            total += pts
+            deductions.append(msg)
+        return min(total, cap)
 
-    web = data.get("web", [])
-    for site in web if isinstance(web, list) else []:
-        tls = site.get("tls", {})
+    # --- AWS: world-open ingress (0.0.0.0/0). 80/443 expected; SSH + app/DB ports flagged.
+    aws_raw = []
+    for acct in (data.get("aws_inventory") or []):
+        if acct.get("error"):
+            continue
+        name = acct.get("account")
+        for port in (acct.get("totals", {}) or {}).get("open_ports", []):
+            if isinstance(port, int) and port in EXPECTED_PUBLIC_PORTS:
+                continue
+            pts = 8 if port == 22 else (15 if not isinstance(port, int) else 10)
+            label = "all traffic" if not isinstance(port, int) else f"port {port}"
+            aws_raw.append((pts, f"World-open {label} on {name}"))
+    score -= category(aws_raw, 30)
+
+    # --- Web: TLS validity/expiry + missing security headers.
+    tls_raw, hdr_raw = [], []
+    for site in (data.get("web_security") or []):
+        nm = site.get("name")
+        tls = site.get("tls") or {}
         days = tls.get("days_remaining")
-        if days is not None:
-            if days < 7:
-                score -= 20
-                deductions.append(f"TLS expiring soon: {site['name']} ({days} days)")
-            elif days < 30:
-                score -= 10
-                deductions.append(f"TLS expiring: {site['name']} ({days} days)")
         if tls.get("error"):
-            score -= 15
-            deductions.append(f"TLS error on {site['name']}: {tls['error']}")
-
-        missing = site.get("headers", {}).get("missing", [])
+            tls_raw.append((15, f"TLS error on {nm}: {tls.get('error')}"))
+        elif days is not None and days < 7:
+            tls_raw.append((20, f"TLS expiring soon: {nm} ({days}d)"))
+        elif days is not None and days < 30:
+            tls_raw.append((10, f"TLS expiring: {nm} ({days}d)"))
+        missing = (site.get("headers", {}) or {}).get("missing", []) or []
         if missing:
-            score -= len(missing) * 3
-            deductions.append(f"Missing headers on {site['name']}: {missing}")
+            names = ", ".join(str(m if isinstance(m, str) else (m or {}).get("header", "")) for m in missing)
+            hdr_raw.append((min(len(missing), 4), f"Missing headers on {nm}: {names}"))
+    score -= category(tls_raw, 40)
+    score -= category(hdr_raw, 15)
 
-    gh = data.get("github", {})
-    repos = gh.get("repos", [])
-    for repo in repos if isinstance(repos, list) else []:
-        bp = repo.get("branch_protection")
-        if bp is None:
-            score -= 2
-            deductions.append(f"No branch protection: {repo['name']}")
+    # --- GitHub: only judge repos where admin read worked (secret_scanning is not None).
+    gh_raw = []
+    for repo in ((data.get("github_security") or {}).get("repos") or []):
+        if repo.get("archived") or repo.get("secret_scanning") is None:
+            continue  # archived, or no admin visibility — don't penalize unknowns
+        if not repo.get("branch_protection"):
+            gh_raw.append((1, f"No branch protection: {repo.get('name')}"))
+        if repo.get("secret_scanning") == "disabled":
+            gh_raw.append((1, f"Secret scanning off: {repo.get('name')}"))
+    score -= category(gh_raw, 20)
 
     score = max(0, min(100, score))
-
     return {
         "score": score,
         "deductions": deductions,
