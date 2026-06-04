@@ -26,7 +26,7 @@ DOMAINS = [
     {"name": "DApp", "url": "https://dapp.truesight.me"},
     {"name": "Edgar API", "url": "https://edgar.truesight.me"},
     {"name": "Capoeira", "url": "https://capoeira.agroverse.shop"},
-    {"name": "Mirim Bahia", "url": "https://mirim-bahia.truesight.me"},
+    {"name": "Mirim Bahia", "url": "https://tribomirimbahia.truesight.me"},
     {"name": "Oracle", "url": "https://oracle.truesight.me"},
     {"name": "Beta DApp", "url": "https://beta.dapp.truesight.me"},
 ]
