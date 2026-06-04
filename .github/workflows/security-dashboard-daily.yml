@@ -43,7 +43,7 @@ jobs:
 
       - name: Run GitHub security scan
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CYPHER_DEFENCE_OPS_PAT }}
         run: |
           python scripts/security_scan/scan_github_security.py > /tmp/github.json || echo "GitHub scan failed (non-fatal)"
 

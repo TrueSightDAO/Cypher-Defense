@@ -10,7 +10,7 @@ Scans both TrueSight DAO AWS accounts (Explorya + Nelanco) for:
 
 Outputs JSON to stdout for consumption by compile_security_report.py.
 
-Credentials: loads repo-root .env. Falls back gracefully if missing.
+Credentials: reads from environment variables (GitHub Actions secrets or .env).
 """
 
 import json
@@ -22,7 +22,6 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 try:
     import boto3
     from botocore.config import Config
-    from dotenv import load_dotenv
     HAS_BOTO = True
 except ImportError:
     HAS_BOTO = False
@@ -37,15 +36,17 @@ CFG = Config(retries={"max_attempts": 5, "mode": "adaptive"})
 
 
 def session_for(account):
-    """Create a boto3 session for the given account label."""
-    env_path = os.path.join(os.path.dirname(__file__), "..", "..", ".env")
-    if os.path.exists(env_path):
-        load_dotenv(env_path)
+    """Create a boto3 session for the given account label from env vars."""
     kk, sk = ACCOUNTS[account]
-    ak, secret = os.getenv(kk), os.getenv(sk)
+    ak = os.environ.get(kk)
+    secret = os.environ.get(sk)
     if not ak or not secret:
-        return None
-    return boto3.Session(aws_access_key_id=ak, aws_secret_access_key=secret)
+        return None, f"Missing env var: {kk}={'set' if ak else 'unset'}, {sk}={'set' if secret else 'unset'}"
+    try:
+        sess = boto3.Session(aws_access_key_id=ak, aws_secret_access_key=secret)
+        return sess, None
+    except Exception as e:
+        return None, str(e)
 
 
 def get_regions(sess):
@@ -78,9 +79,9 @@ def scan_account(account_label):
         result["error"] = "boto3 not installed"
         return result
 
-    sess = session_for(account_label)
-    if not sess:
-        result["error"] = "AWS credentials not configured"
+    sess, err = session_for(account_label)
+    if err:
+        result["error"] = err
         return result
 
     try:
