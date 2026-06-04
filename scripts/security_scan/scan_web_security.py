@@ -9,8 +9,10 @@ Outputs JSON to stdout for consumption by compile_security_report.py.
 """
 
 import json
+import os
 import socket
 import ssl
+import sys
 from datetime import datetime, timezone
 
 try:
@@ -19,7 +21,16 @@ try:
 except ImportError:
     HAS_REQUESTS = False
 
+try:
+    import boto3
+    HAS_BOTO = True
+except ImportError:
+    HAS_BOTO = False
 
+
+# Curated domains — provide friendly display names. The full list (incl. beta subdomains)
+# is discovered from Route53 at scan time and merged in; this is also the fallback when
+# Route53 isn't reachable.
 DOMAINS = [
     {"name": "TrueSight DAO", "url": "https://truesight.me"},
     {"name": "Agroverse Shop", "url": "https://agroverse.shop"},
@@ -30,6 +41,60 @@ DOMAINS = [
     {"name": "Oracle", "url": "https://oracle.truesight.me"},
     {"name": "Beta DApp", "url": "https://beta.dapp.truesight.me"},
 ]
+
+# Hosted zones whose A/AAAA/CNAME records we enumerate so beta + new subdomains are
+# covered automatically. These zones live in the explorya account; the compile step
+# passes TRUESIGHT_DAO_AUTOPILOT_AWS_* creds, which can read Route53.
+ROUTE53_ZONES = {"truesight.me.", "agroverse.shop."}
+ROUTE53_SKIP_SUBSTR = ("_domainkey", "domainkey")
+
+
+def _route53_client():
+    ak = os.environ.get("TRUESIGHT_DAO_AUTOPILOT_AWS_KEY")
+    sk = os.environ.get("TRUESIGHT_DAO_AUTOPILOT_AWS_SECRET")
+    if ak and sk:
+        return boto3.client("route53", aws_access_key_id=ak, aws_secret_access_key=sk)
+    return boto3.client("route53")  # fall back to the default credential chain
+
+
+def discover_from_route53():
+    """Web-facing hostnames (A/AAAA/CNAME) from the DAO hosted zones. [] if unavailable —
+    skips ACM/DKIM validation records (`_`-prefixed, `domainkey`) and wildcards."""
+    if not HAS_BOTO:
+        return []
+    try:
+        r = _route53_client()
+        names = []
+        for z in r.list_hosted_zones().get("HostedZones", []):
+            if z.get("Name") not in ROUTE53_ZONES:
+                continue
+            zid = z["Id"].split("/")[-1]
+            for page in r.get_paginator("list_resource_record_sets").paginate(HostedZoneId=zid):
+                for rr in page.get("ResourceRecordSets", []):
+                    if rr.get("Type") not in ("A", "AAAA", "CNAME"):
+                        continue
+                    name = rr["Name"].rstrip(".")
+                    if not name or name[0] in "*_" or "\\" in name:
+                        continue
+                    if any(s in name for s in ROUTE53_SKIP_SUBSTR):
+                        continue
+                    names.append(name)
+        return sorted(set(names))
+    except Exception as e:
+        print("route53 discovery failed: %s" % e, file=sys.stderr)
+        return []
+
+
+def build_domains():
+    """Curated domains (friendly names) + Route53-discovered ones, deduped by hostname."""
+    by_host = {}
+    for d in DOMAINS:
+        host = d["url"].split("://", 1)[-1].split("/")[0]
+        by_host[host] = {"name": d["name"], "url": d["url"]}
+    for host in discover_from_route53():
+        if host not in by_host:
+            by_host[host] = {"name": host, "url": "https://" + host}
+    return [by_host[h] for h in sorted(by_host)]
 
 SECURITY_HEADERS = {
     "Content-Security-Policy": "CSP",
@@ -105,7 +170,7 @@ def check_headers(url):
 def main():
     """Scan all domains and print JSON."""
     results = []
-    for domain in DOMAINS:
+    for domain in build_domains():
         hostname = domain["url"].replace("https://", "").replace("http://", "").split("/")[0]
         entry = {
             "name": domain["name"],
