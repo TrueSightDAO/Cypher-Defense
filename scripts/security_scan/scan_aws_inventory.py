@@ -152,7 +152,13 @@ def scan_account(account_label):
 
         result["regions"][region] = region_data
 
-    result["totals"]["open_ports"] = sorted(all_open_ports)
+    # open_ports can mix ints with the string "any" (rules without a FromPort, e.g.
+    # protocol -1 all-traffic), so a plain sorted() raises TypeError. Order numeric ports
+    # first (ascending), then any non-int markers like "any".
+    result["totals"]["open_ports"] = sorted(
+        all_open_ports,
+        key=lambda p: (0, p) if isinstance(p, int) else (1, str(p)),
+    )
     return result
 
 
