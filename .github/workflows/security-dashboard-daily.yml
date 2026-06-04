@@ -35,26 +35,26 @@ jobs:
           TRUESIGHT_DAO_AUTOPILOT_AWS_KEY: ${{ secrets.TRUESIGHT_DAO_AUTOPILOT_AWS_KEY }}
           TRUESIGHT_DAO_AUTOPILOT_AWS_SECRET: ${{ secrets.TRUESIGHT_DAO_AUTOPILOT_AWS_SECRET }}
         run: |
-          python scripts/security_scan/scan_aws_inventory.py > /tmp/aws.json 2>&1 || echo "AWS scan failed (non-fatal)"
+          python scripts/security_scan/scan_aws_inventory.py > /tmp/aws.json || echo "AWS scan failed (non-fatal)"
 
       - name: Run web security scan
         run: |
-          python scripts/security_scan/scan_web_security.py > /tmp/web.json 2>&1 || echo "Web scan failed (non-fatal)"
+          python scripts/security_scan/scan_web_security.py > /tmp/web.json || echo "Web scan failed (non-fatal)"
 
       - name: Run GitHub security scan
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python scripts/security_scan/scan_github_security.py > /tmp/github.json 2>&1 || echo "GitHub scan failed (non-fatal)"
+          python scripts/security_scan/scan_github_security.py > /tmp/github.json || echo "GitHub scan failed (non-fatal)"
 
       - name: Run phishing blacklist scan
         run: |
-          python scripts/security_scan/scan_phishing_blacklist.py > /tmp/phishing.json 2>&1 || echo "Phishing scan failed (non-fatal)"
+          python scripts/security_scan/scan_phishing_blacklist.py > /tmp/phishing.json || echo "Phishing scan failed (non-fatal)"
 
       - name: Compile security report
         id: compile
         run: |
-          python scripts/security_scan/compile_security_report.py > /tmp/security-dashboard.json 2>&1
+          python scripts/security_scan/compile_security_report.py > /tmp/security-dashboard.json
           echo "report_size=$(wc -c < /tmp/security-dashboard.json)" >> $GITHUB_OUTPUT
 
       - name: Checkout treasury-cache
