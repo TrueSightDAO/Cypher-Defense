@@ -1,0 +1,81 @@
+name: Security Dashboard — Daily Scan
+
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  scan-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Cypher-Defense
+        uses: actions/checkout@v4
+        with:
+          repository: TrueSightDAO/Cypher-Defense
+          ref: master
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install boto3 python-dotenv requests
+
+      - name: Run AWS inventory scan
+        env:
+          CYPHER_DEFENCE_AWS_KEY: ${{ secrets.CYPHER_DEFENCE_AWS_KEY }}
+          CYPHER_DEFENCE_AWS_SECRET: ${{ secrets.CYPHER_DEFENCE_AWS_SECRET }}
+          TRUESIGHT_DAO_AUTOPILOT_AWS_KEY: ${{ secrets.TRUESIGHT_DAO_AUTOPILOT_AWS_KEY }}
+          TRUESIGHT_DAO_AUTOPILOT_AWS_SECRET: ${{ secrets.TRUESIGHT_DAO_AUTOPILOT_AWS_SECRET }}
+        run: |
+          python scripts/security_scan/scan_aws_inventory.py > /tmp/aws.json 2>&1 || echo "AWS scan failed (non-fatal)"
+
+      - name: Run web security scan
+        run: |
+          python scripts/security_scan/scan_web_security.py > /tmp/web.json 2>&1 || echo "Web scan failed (non-fatal)"
+
+      - name: Run GitHub security scan
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python scripts/security_scan/scan_github_security.py > /tmp/github.json 2>&1 || echo "GitHub scan failed (non-fatal)"
+
+      - name: Run phishing blacklist scan
+        run: |
+          python scripts/security_scan/scan_phishing_blacklist.py > /tmp/phishing.json 2>&1 || echo "Phishing scan failed (non-fatal)"
+
+      - name: Compile security report
+        id: compile
+        run: |
+          python scripts/security_scan/compile_security_report.py > /tmp/security-dashboard.json 2>&1
+          echo "report_size=$(wc -c < /tmp/security-dashboard.json)" >> $GITHUB_OUTPUT
+
+      - name: Checkout treasury-cache
+        uses: actions/checkout@v4
+        with:
+          repository: TrueSightDAO/treasury-cache
+          ref: main
+          path: treasury-cache
+          token: ${{ secrets.TREASURY_CACHE_PUSH_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: Publish to treasury-cache
+        run: |
+          mkdir -p treasury-cache/managed-ledgers
+          cp /tmp/security-dashboard.json treasury-cache/managed-ledgers/security-dashboard.json
+          cd treasury-cache
+          git config user.name "Cypher-Defense Scanner"
+          git config user.email "autopilot@truesight.me"
+          git add managed-ledgers/security-dashboard.json
+          if git diff --cached --quiet; then
+            echo "No changes to publish"
+          else
+            git commit -m "security-dashboard: daily scan $(date -u +%Y-%m-%d)"
+            git push
+          fi
