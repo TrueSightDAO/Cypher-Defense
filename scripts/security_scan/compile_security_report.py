@@ -116,14 +116,20 @@ def calculate_score(data):
     score -= category(hdr_raw, 10)
 
     # --- GitHub: only judge repos where admin read worked (secret_scanning is not None).
-    gh_raw = []
+    # Collapse to per-category counts so the deductions list stays readable (not 1 line/repo).
+    no_bp = ss_off = 0
     for repo in ((data.get("github_security") or {}).get("repos") or []):
         if repo.get("archived") or repo.get("secret_scanning") is None:
             continue  # archived, or no admin visibility — don't penalize unknowns
         if not repo.get("branch_protection"):
-            gh_raw.append((1, f"No branch protection: {repo.get('name')}"))
+            no_bp += 1
         if repo.get("secret_scanning") == "disabled":
-            gh_raw.append((1, f"Secret scanning off: {repo.get('name')}"))
+            ss_off += 1
+    gh_raw = []
+    if no_bp:
+        gh_raw.append((no_bp, f"{no_bp} repos without branch protection"))
+    if ss_off:
+        gh_raw.append((ss_off, f"{ss_off} repos with secret scanning disabled"))
     score -= category(gh_raw, 15)
 
     score = max(0, min(100, score))
