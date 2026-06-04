@@ -8,6 +8,7 @@ TrueSight DAO domains.
 Outputs JSON to stdout for consumption by compile_security_report.py.
 """
 
+import ipaddress
 import json
 import os
 import socket
@@ -28,33 +29,52 @@ except ImportError:
     HAS_BOTO = False
 
 
-# Curated domains — provide friendly display names. The full list (incl. beta subdomains)
-# is discovered from Route53 at scan time and merged in; this is also the fallback when
-# Route53 isn't reachable.
-DOMAINS = [
-    {"name": "TrueSight DAO", "url": "https://truesight.me"},
-    {"name": "Agroverse Shop", "url": "https://agroverse.shop"},
-    {"name": "DApp", "url": "https://dapp.truesight.me"},
-    {"name": "Edgar API", "url": "https://edgar.truesight.me"},
-    {"name": "Capoeira", "url": "https://capoeira.agroverse.shop"},
-    {"name": "Mirim Bahia", "url": "https://tribomirimbahia.truesight.me"},
-    {"name": "Oracle", "url": "https://oracle.truesight.me"},
-    {"name": "Beta DApp", "url": "https://beta.dapp.truesight.me"},
-]
-
-# Hosted zones whose A/AAAA/CNAME records we enumerate so beta + new subdomains are
-# covered automatically. These zones live in the explorya account; the compile step
-# passes TRUESIGHT_DAO_AUTOPILOT_AWS_* creds, which can read Route53.
-ROUTE53_ZONES = {"truesight.me.", "agroverse.shop."}
-ROUTE53_SKIP_SUBSTR = ("_domainkey", "domainkey")
-
-# GitHub Pages anycast IPs (A + AAAA records). https://docs.github.com/pages
-GITHUB_PAGES_IPS = {
-    "185.199.108.153", "185.199.109.153", "185.199.110.153", "185.199.111.153",
-    "2606:50c0:8000::153", "2606:50c0:8001::153", "2606:50c0:8002::153", "2606:50c0:8003::153",
+# Which hosted zones to audit — comma-separated env override (`DASHBOARD_DNS_ZONES`),
+# defaulting to the DAO's domains. This is a scope boundary, NOT a per-subdomain list:
+# every subdomain is discovered live from Route53, and the GitHub Pages IP ranges are
+# fetched live from api.github.com/meta — neither domains nor IPs are hardcoded.
+ROUTE53_ZONES = {
+    (z.strip() if z.strip().endswith(".") else z.strip() + ".")
+    for z in os.environ.get("DASHBOARD_DNS_ZONES", "truesight.me,agroverse.shop").split(",")
+    if z.strip()
 }
-# Hosting types we hold to the web-security bar (TLS + headers) in scoring.
+ROUTE53_SKIP_SUBSTR = ("_domainkey", "domainkey")
 WEB_HOSTING_TYPES = {"github-pages", "ec2"}
+
+
+_GH_PAGES_CIDRS = None
+
+
+def github_pages_cidrs():
+    """GitHub Pages IP ranges, fetched live from api.github.com/meta (.pages). Cached per run."""
+    global _GH_PAGES_CIDRS
+    if _GH_PAGES_CIDRS is not None:
+        return _GH_PAGES_CIDRS
+    nets = []
+    try:
+        if HAS_REQUESTS:
+            meta = requests.get("https://api.github.com/meta", timeout=10).json()
+        else:
+            import urllib.request
+            with urllib.request.urlopen("https://api.github.com/meta", timeout=10) as resp:
+                meta = json.load(resp)
+        for cidr in meta.get("pages", []):
+            try:
+                nets.append(ipaddress.ip_network(cidr))
+            except ValueError:
+                pass
+    except Exception as e:
+        print("github meta fetch failed: %s" % e, file=sys.stderr)
+    _GH_PAGES_CIDRS = nets
+    return nets
+
+
+def _ip_in_github_pages(value):
+    try:
+        addr = ipaddress.ip_address(value)
+    except ValueError:
+        return False
+    return any(addr in net for net in github_pages_cidrs())
 
 
 def _route53_client():
@@ -89,7 +109,7 @@ def _classify_record(rr):
             return ("aws", tv)
         return ("external", tv)
     # A / AAAA
-    if any(v in GITHUB_PAGES_IPS for v in vals):
+    if any(_ip_in_github_pages(v) for v in vals):
         return ("github-pages", target)
     return ("ec2", target)  # raw IP we point at — our EC2 / self-hosted
 
@@ -123,18 +143,19 @@ def discover_from_route53():
 
 
 def build_domains():
-    """Curated domains (friendly names) + Route53-discovered ones, deduped by hostname,
-    each tagged with its hosting type + target."""
-    by_host = {}
-    for d in DOMAINS:
-        host = d["url"].split("://", 1)[-1].split("/")[0]
-        by_host[host] = {"name": d["name"], "url": d["url"], "hosting": None, "target": None}
-    for host, (hosting, target) in discover_from_route53().items():
-        entry = by_host.get(host) or {"name": host, "url": "https://" + host}
-        entry["hosting"] = hosting
-        entry["target"] = target
-        by_host[host] = entry
-    return [by_host[h] for h in sorted(by_host)]
+    """All web-facing hostnames discovered from the configured Route53 zones (deduped,
+    each tagged with hosting + target). Falls back to the zone apexes if Route53 is
+    unavailable — no hardcoded per-domain list."""
+    discovered = discover_from_route53()
+    if not discovered:
+        return [
+            {"name": z.rstrip("."), "url": "https://" + z.rstrip("."), "hosting": None, "target": None}
+            for z in sorted(ROUTE53_ZONES)
+        ]
+    return [
+        {"name": host, "url": "https://" + host, "hosting": hosting, "target": target}
+        for host, (hosting, target) in sorted(discovered.items())
+    ]
 
 SECURITY_HEADERS = {
     "Content-Security-Policy": "CSP",
