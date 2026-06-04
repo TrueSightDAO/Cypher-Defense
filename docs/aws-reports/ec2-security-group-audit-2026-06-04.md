@@ -70,7 +70,7 @@ This is the single biggest deduction on the security dashboard score, and remedi
 | Severity | Finding | Why it matters |
 |---|---|---|
 | **Critical** | `default` SG (us-east-1, both accounts) = all-traffic `0.0.0.0/0` on 16 running boxes | Redis (often no auth), Postgres, dao_protocol API, and all internal ports are internet-reachable. A single weak/unauthenticated service = full compromise. |
-| **High** | SSH (22) world-open on `default` (all 16 boxes) and `launch-wizard-1` | Constant brute-force surface; should be admin-IP / SSM only. |
+| **High** | SSH (22) world-open on `default` (all 16 boxes) and `launch-wizard-1` | Constant brute-force surface — accepted, mitigated by SSH key-only auth (operator declined SSM/CIDR; see §4 access decision). |
 | **Medium** | `edgar-2026-05-10` world-open (4 ports) on 2 stopped boxes | No live exposure while stopped, but the boxes + SG are stale — terminate or re-secure before any restart. |
 | **Low/Good** | `Californian proxy` has no world-open rules | Use as the template for "locked-down proxy". |
 
@@ -80,24 +80,26 @@ This is the single biggest deduction on the security dashboard score, and remedi
 
 Replace the shared, wide-open `default` SG with **role-scoped SGs that reference each other by SG ID** (not CIDR) for internal traffic, so services are only reachable from the tiers that need them.
 
+**Access-model decision (operator, 2026-06-04):** **no SSM** (not wanted) and **no admin-CIDR** (operator IP roams). Therefore SSH (22/2202) and Monit (2812) **stay reachable from the internet**, with **SSH key-only auth** (`PasswordAuthentication no`) and Monit's basic auth as the controls. The remediation effort goes entirely into **closing the data + internal-app ports to the world** — that's where the real risk is (unauthenticated Redis/DB/API on the public internet). Because SSH stays open throughout, **there is no lock-out risk** and execution is dramatically simpler.
+
 **Binding rule:** for **cattle** roles, attach the SG on the **launch template** (then roll a new LT version + ASG instance refresh); for **pet** roles, attach on the instance ENI. The SG *design* is identical either way — only the attachment point differs.
 
 | New SG | Inbound rule | Source | Bind on (role → cattle/pet) |
 |---|---|---|---|
-| `tsd-admin` | **22/tcp + 2202/tcp** (SSH — some hosts run sshd on 2202, not 22) **+ 2812/tcp (Monit)** | `<ADMIN_CIDR>` (your IP/VPN) — or 0 SSH inbound if SSM is enabled, but **2812 must stay reachable from admin** | **every** instance (LT for cattle, ENI for pets) |
+| `tsd-mgmt` | **22 + 2202 (SSH)** + **2812 (Monit)** | `0.0.0.0/0` (accepted — no SSM/CIDR; relies on SSH key-only + Monit auth). Harden: ensure `PasswordAuthentication no` on every host. | **every** instance (LT for cattle, ENI for pets) |
 | `tsd-web-public` | 80, 443/tcp | `0.0.0.0/0` (+ `::/0`) | nginx web pets: `krake_nginx`, `seni_ror_200250915` |
 | `tsd-app` | app backends — dao_protocol 8010, puma 3002, uvicorn 8000, Rails 3000, krake webhook port | `tsd-web-public` + localhost (SG ref / 127.0.0.1) — **not world** | app pets (`dao_protocol_nelanco`, `seni_ror_200250915`) + cattle `krake_ror` (LT), `krake_sk_webhook` (LT) |
 | `tsd-redis` | 6379/tcp | `tsd-app` + `tsd-worker` (SG refs) | Redis pets: `GETDATA_REDIS`, `seni_redis_2`; cattle `GETDATA_CACHE` (LT getdata_cacher) |
 | `tsd-db` | 5432 / 3306 / 9200 (ES?) | `tsd-app` (SG ref) | DB pets: `seni_sql_2026`, `krake_data` (**confirm: Postgres / Elasticsearch?**) |
-| `tsd-worker` | none (egress only; +2812 via `tsd-admin`) | — | worker cattle (LT): `krake_sk`, `krake_sk_scaler`, `krake_sk_crawler`, ASG `seni_sk`; + standalone worker pet `seni_sk_auto` |
+| `tsd-worker` | none (egress only; SSH/Monit via `tsd-mgmt`) | — | worker cattle (LT): `krake_sk`, `krake_sk_scaler`, `krake_sk_crawler`, ASG `seni_sk`; + standalone worker pet `seni_sk_auto` |
 
 **Observed listening ports (live `ss -tlnp`, 2026-06-04 — sample):**
 - `dao_protocol_nelanco`: 22, **2812 (monit, 0.0.0.0)**, 8010 (FastAPI, 0.0.0.0). → 8010 should be `tsd-app` (from Edgar/nginx only), not world.
 - `seni_ror_200250915` (Edgar): 22, **2812 (monit, 0.0.0.0)**, 80/443 (nginx, public), 3002 (puma, 0.0.0.0), 8000 (uvicorn, 0.0.0.0), 5432 (postgres, **127.0.0.1 — already localhost-only ✓**). → 80/443 public; 3002/8000 restrict to localhost/`tsd-app`; Postgres already safe.
 
-**SSH ports (from `~/.ssh/config`):** all sampled hosts use **22 except `krake_nginx` (`krake_ng`) → 2202**; the `explorya` bastion entry is also 2202. Some config IPs are stale (dynamic public IPs), so confirm each host's real `sshd` `Port` at execution. `tsd-admin` therefore allows both 22 and 2202.
+**SSH ports (from `~/.ssh/config`):** all sampled hosts use **22 except `krake_nginx` (`krake_ng`) → 2202**; the `explorya` bastion entry is also 2202. Some config IPs are stale (dynamic public IPs), so confirm each host's real `sshd` `Port` at execution. `tsd-mgmt` therefore allows both 22 and 2202.
 
-**Monit is on `0.0.0.0:2812` on every host** — currently world-reachable through the open default SG. The new SGs **must keep 2812 open to `<ADMIN_CIDR>`** (it's the one-click restart UI) but close it to the world.
+**Monit is on `0.0.0.0:2812` on every host** — currently world-reachable through the open default SG. Per the access decision, **2812 stays open to the world behind Monit.s basic auth** (no CIDR) — but scoped to the `tsd-mgmt` SG instead of the all-traffic default.
 
 **Phase-2 method:** `ss -tlnp` (done above for 2 hosts; repeat per host) **plus** reading each box's config (`/etc/nginx/sites-enabled/*`, systemd unit `ExecStart`, app `.env`) to confirm which ports are real + which bind `0.0.0.0` vs `127.0.0.1`. Anything already on `127.0.0.1` needs no SG opening at all.
 
@@ -107,13 +109,13 @@ Replace the shared, wide-open `default` SG with **role-scoped SGs that reference
 
 > Guiding rule: **never remove access before the replacement is verified.** Add new SGs alongside `default`, prove connectivity, then remove `default` per instance — one at a time, with a recorded rollback command for each step.
 
-- [ ] **Phase 0 — Break-glass & prerequisites**
-  - [ ] Confirm **SSM Session Manager** works on each box (`aws ssm start-session`) so SSH-via-SG is never the only way in. If not, set `ADMIN_CIDR` and keep an out-of-band console path.
+- [ ] **Phase 0 — Prerequisites** (no SSM, no CIDR — SSH stays open, so no break-glass needed)
   - [ ] Obtain a **write-scoped** IAM key (the scanner keys are read-only): `ec2:CreateSecurityGroup`, `ec2:AuthorizeSecurityGroupIngress/Egress`, `ec2:RevokeSecurityGroupIngress`, `ec2:ModifyInstanceAttribute`, `ec2:ModifyNetworkInterfaceAttribute`.
+  - [ ] Confirm `PasswordAuthentication no` in `sshd_config` on every host (so world-open 22/2202 is key-only).
   - [ ] Save this audit JSON as the pre-change snapshot (rollback reference).
-- [ ] **Phase 1 — Create the new SGs** (additive; zero runtime impact). Per region/account. Ensure `tsd-admin` includes **2812 (Monit)** + 22 from `<ADMIN_CIDR>`.
-- [ ] **Phase 2 — Confirm actual ports** per instance: `ss -tlnp` + read configs (`/etc/nginx/sites-enabled`, systemd `ExecStart`, app `.env`, `sshd_config` `Port`). Anything bound `127.0.0.1` needs no SG opening. **Confirm the SSH port per host — some run sshd on 2202, not 22** — and make sure `tsd-admin` allows whichever each host uses before detaching the open SG (else you lock yourself out). Finalize the §4 map; resolve `krake_data` engine (Postgres vs Elasticsearch) and whether any ES :9200 exists.
-- [ ] **Phase 3 — Pilot on ONE pet** (lowest-risk, e.g. a standalone worker): attach new SG(s) **alongside** the open SG on its ENI, verify SSH/SSM + **Monit 2812** + the service, monitor ~30 min.
+- [ ] **Phase 1 — Create the new SGs** (additive; zero runtime impact). Per region/account. Ensure `tsd-mgmt` includes 22 + 2202 (SSH) + 2812 (Monit) from `0.0.0.0/0`.
+- [ ] **Phase 2 — Confirm actual ports** per instance: `ss -tlnp` + read configs (`/etc/nginx/sites-enabled`, systemd `ExecStart`, app `.env`, `sshd_config` `Port`). Anything bound `127.0.0.1` needs no SG opening. **Confirm the SSH port per host — some run sshd on 2202, not 22** — and make sure `tsd-mgmt` allows whichever each host uses before detaching the open SG (else you lock yourself out). Finalize the §4 map; resolve `krake_data` engine (Postgres vs Elasticsearch) and whether any ES :9200 exists.
+- [ ] **Phase 3 — Pilot on ONE pet** (lowest-risk, e.g. a standalone worker): attach new SG(s) **alongside** the open SG on its ENI, verify SSH + **Monit 2812** + the service, monitor ~30 min.
 - [ ] **Phase 4 — Roll out, by attachment type:**
   - **Pets** → attach role SG on the ENI alongside the open SG; verify; tier order workers → caches → DBs → app → web.
   - **Cattle** → create a **new launch-template version** with the role SG (drop the open default), update the ASG to it, then **instance refresh** (rolling). Do NOT hand-attach SGs to ASG instances — it's wiped on the next refresh.
@@ -121,7 +123,7 @@ Replace the shared, wide-open `default` SG with **role-scoped SGs that reference
 - [ ] **Phase 6 — Tighten the now-unused SGs:** revoke the `0.0.0.0/0` ALL rule on `default` (sg-4314630c) + `new default` (sg-0aac0e825c554da19) + `default` (sg-e98f788e); drop world-22 on `launch-wizard-1`; **terminate** the stopped `seni_sk_2026` / `seni_ror_2026` (or re-secure `edgar-2026-05-10`). Confirm **2812 is no longer world-open** anywhere (admin-only).
 - [ ] **Phase 7 — Re-scan** (Cypher-Defense dashboard) to confirm world-open ports → 0 and the score recovers.
 
-**Per-step verification checklist:** (1) SSH/SSM reachable; (2) **Monit UI reachable on :2812 from admin**; (3) service health endpoint responds; (4) dependent services still connect (app→redis/db, nginx→puma/uvicorn/dao_protocol); (5) no new errors in app/CloudWatch logs.
+**Per-step verification checklist:** (1) SSH reachable; (2) **Monit UI reachable on :2812**; (3) service health endpoint responds; (4) dependent services still connect (app→redis/db, nginx→puma/uvicorn/dao_protocol); (5) no new errors in app/CloudWatch logs.
 
 **Rollback:** every Phase 5/6 step is a single inverse API call — re-attach the SG (`modify-instance-attribute --groups …`) or re-add the rule (`authorize-security-group-ingress …`). Keep them in a runbook as you go.
 
