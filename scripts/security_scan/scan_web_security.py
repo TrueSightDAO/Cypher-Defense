@@ -48,6 +48,14 @@ DOMAINS = [
 ROUTE53_ZONES = {"truesight.me.", "agroverse.shop."}
 ROUTE53_SKIP_SUBSTR = ("_domainkey", "domainkey")
 
+# GitHub Pages anycast IPs (A + AAAA records). https://docs.github.com/pages
+GITHUB_PAGES_IPS = {
+    "185.199.108.153", "185.199.109.153", "185.199.110.153", "185.199.111.153",
+    "2606:50c0:8000::153", "2606:50c0:8001::153", "2606:50c0:8002::153", "2606:50c0:8003::153",
+}
+# Hosting types we hold to the web-security bar (TLS + headers) in scoring.
+WEB_HOSTING_TYPES = {"github-pages", "ec2"}
+
 
 def _route53_client():
     ak = os.environ.get("TRUESIGHT_DAO_AUTOPILOT_AWS_KEY")
@@ -57,14 +65,43 @@ def _route53_client():
     return boto3.client("route53")  # fall back to the default credential chain
 
 
+def _classify_record(rr):
+    """Return (hosting, target) for a Route53 record — what does this domain point to?"""
+    alias = rr.get("AliasTarget")
+    if alias:
+        dn = (alias.get("DNSName") or "").rstrip(".").lower()
+        if "cloudfront.net" in dn:
+            return ("cloudfront", dn)
+        if "elb.amazonaws.com" in dn:
+            return ("ec2", dn)  # load balancer in front of EC2
+        if "s3" in dn and "amazonaws.com" in dn:
+            return ("s3", dn)
+        return ("alias", dn)
+    vals = [v.get("Value", "") for v in rr.get("ResourceRecords", [])]
+    target = ", ".join(vals)
+    if rr.get("Type") == "CNAME":
+        tv = (vals[0] if vals else "").rstrip(".").lower()
+        if tv.endswith(".github.io"):
+            return ("github-pages", tv)
+        if "cloudfront.net" in tv:
+            return ("cloudfront", tv)
+        if "amazonaws.com" in tv:
+            return ("aws", tv)
+        return ("external", tv)
+    # A / AAAA
+    if any(v in GITHUB_PAGES_IPS for v in vals):
+        return ("github-pages", target)
+    return ("ec2", target)  # raw IP we point at — our EC2 / self-hosted
+
+
 def discover_from_route53():
-    """Web-facing hostnames (A/AAAA/CNAME) from the DAO hosted zones. [] if unavailable —
-    skips ACM/DKIM validation records (`_`-prefixed, `domainkey`) and wildcards."""
+    """Web-facing records from the DAO hosted zones → {host: (hosting, target)}.
+    {} if unavailable. Skips ACM/DKIM validation (`_`-prefixed, `domainkey`) + wildcards."""
     if not HAS_BOTO:
-        return []
+        return {}
     try:
         r = _route53_client()
-        names = []
+        found = {}
         for z in r.list_hosted_zones().get("HostedZones", []):
             if z.get("Name") not in ROUTE53_ZONES:
                 continue
@@ -78,22 +115,25 @@ def discover_from_route53():
                         continue
                     if any(s in name for s in ROUTE53_SKIP_SUBSTR):
                         continue
-                    names.append(name)
-        return sorted(set(names))
+                    found[name] = _classify_record(rr)
+        return found
     except Exception as e:
         print("route53 discovery failed: %s" % e, file=sys.stderr)
-        return []
+        return {}
 
 
 def build_domains():
-    """Curated domains (friendly names) + Route53-discovered ones, deduped by hostname."""
+    """Curated domains (friendly names) + Route53-discovered ones, deduped by hostname,
+    each tagged with its hosting type + target."""
     by_host = {}
     for d in DOMAINS:
         host = d["url"].split("://", 1)[-1].split("/")[0]
-        by_host[host] = {"name": d["name"], "url": d["url"]}
-    for host in discover_from_route53():
-        if host not in by_host:
-            by_host[host] = {"name": host, "url": "https://" + host}
+        by_host[host] = {"name": d["name"], "url": d["url"], "hosting": None, "target": None}
+    for host, (hosting, target) in discover_from_route53().items():
+        entry = by_host.get(host) or {"name": host, "url": "https://" + host}
+        entry["hosting"] = hosting
+        entry["target"] = target
+        by_host[host] = entry
     return [by_host[h] for h in sorted(by_host)]
 
 SECURITY_HEADERS = {
@@ -175,6 +215,8 @@ def main():
         entry = {
             "name": domain["name"],
             "url": domain["url"],
+            "hosting": domain.get("hosting"),
+            "target": domain.get("target"),
             "tls": check_tls(hostname),
             "headers": check_headers(domain["url"]),
         }

@@ -91,14 +91,19 @@ def calculate_score(data):
             aws_raw.append((pts, f"World-open {label} on {name}"))
     score -= category(aws_raw, 30)
 
-    # --- Web: TLS validity/expiry + missing security headers.
+    # --- Web: TLS + headers, but ONLY for domains we directly host (GitHub Pages / EC2).
+    # CDN/S3/external records aren't held to our web-security bar (avoids penalizing infra
+    # subdomains we don't control). hosting=None (legacy / curated) is treated as ours.
+    WEB_HOSTED = {"github-pages", "ec2", None}
     tls_raw, hdr_raw = [], []
     for site in (data.get("web_security") or []):
+        if site.get("hosting") not in WEB_HOSTED:
+            continue
         nm = site.get("name")
         tls = site.get("tls") or {}
         days = tls.get("days_remaining")
         if tls.get("error"):
-            tls_raw.append((15, f"TLS error on {nm}: {tls.get('error')}"))
+            tls_raw.append((10, f"TLS error on {nm}: {tls.get('error')}"))
         elif days is not None and days < 7:
             tls_raw.append((20, f"TLS expiring soon: {nm} ({days}d)"))
         elif days is not None and days < 30:
@@ -106,9 +111,9 @@ def calculate_score(data):
         missing = (site.get("headers", {}) or {}).get("missing", []) or []
         if missing:
             names = ", ".join(str(m if isinstance(m, str) else (m or {}).get("header", "")) for m in missing)
-            hdr_raw.append((min(len(missing), 4), f"Missing headers on {nm}: {names}"))
-    score -= category(tls_raw, 40)
-    score -= category(hdr_raw, 15)
+            hdr_raw.append((min(len(missing), 3), f"Missing headers on {nm}: {names}"))  # hygiene
+    score -= category(tls_raw, 25)
+    score -= category(hdr_raw, 10)
 
     # --- GitHub: only judge repos where admin read worked (secret_scanning is not None).
     gh_raw = []
@@ -119,7 +124,7 @@ def calculate_score(data):
             gh_raw.append((1, f"No branch protection: {repo.get('name')}"))
         if repo.get("secret_scanning") == "disabled":
             gh_raw.append((1, f"Secret scanning off: {repo.get('name')}"))
-    score -= category(gh_raw, 20)
+    score -= category(gh_raw, 15)
 
     score = max(0, min(100, score))
     return {
