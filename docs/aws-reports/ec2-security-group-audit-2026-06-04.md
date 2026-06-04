@@ -15,6 +15,10 @@ Additional findings: SSH open to the world on a SG-Pore proxy; a 4-port world-op
 
 This is the single biggest deduction on the security dashboard score, and remediating it is the highest-impact action available.
 
+**Demarcation principle (important).** nelanco/us-east-1 runs **18 Auto Scaling Groups + 6 launch templates** — so many of these instances are ASG-managed *cattle*, and the natural unit for "what ports does this role need" is the **launch template** (≈ the role/AMI), not the individual instance. The remaining standalone *pets* are exactly the stateful + edge roles: **databases, Redis (and Elasticsearch if present), and the individual nginx web servers**. The fix therefore splits two ways:
+- **Cattle (ASG):** set the role SG on the **launch template** → new LT version → ASG instance refresh. **Per-instance SG edits on ASG instances are ephemeral — they get wiped on the next scale-out/refresh** — so the launch template is the only durable place.
+- **Pets (standalone):** set the SG on the instance's ENI directly.
+
 ---
 
 ## 2. Audit findings
@@ -76,16 +80,24 @@ This is the single biggest deduction on the security dashboard score, and remedi
 
 Replace the shared, wide-open `default` SG with **role-scoped SGs that reference each other by SG ID** (not CIDR) for internal traffic, so services are only reachable from the tiers that need them.
 
-| New SG | Inbound rule | Source | Attach to |
-|---|---|---|---|
-| `tsd-ssh-admin` | 22/tcp | `<ADMIN_CIDR>` (your IP/VPN) — or **0 inbound if SSM Session Manager is enabled** | every instance |
-| `tsd-web-public` | 80, 443/tcp | `0.0.0.0/0` (+ `::/0`) | nginx + any public web (`krake_nginx`; confirm others) |
-| `tsd-app` | app ports (Rails 3000, dao_protocol 8010, krake webhook port) | `tsd-web-public` (SG ref) | `seni_ror_200250915`, `krake_ror`, `dao_protocol_nelanco`, `krake_sk_webhook` |
-| `tsd-redis` | 6379/tcp | `tsd-app` + `tsd-worker` (SG refs) | `GETDATA_REDIS`, `GETDATA_CACHE`, `seni_redis_2` |
-| `tsd-db` | 5432 (and/or 3306) | `tsd-app` (SG ref) | `seni_sql_2026`, `krake_data` (confirm engine) |
-| `tsd-worker` | none (egress only) | — | `krake_sk`, `krake_sk_scaler`, `krake_sk_crawler`, `seni_sk_auto` ×2 |
+**Binding rule:** for **cattle** roles, attach the SG on the **launch template** (then roll a new LT version + ASG instance refresh); for **pet** roles, attach on the instance ENI. The SG *design* is identical either way — only the attachment point differs.
 
-**Must-confirm before finalizing the map (Phase 2):** run `ss -tlnp` (or `netstat -tlnp`) on each instance to capture the actual listening ports + which are bound to `0.0.0.0` vs `127.0.0.1`. Several services may already bind to localhost only (in which case the SG can be fully closed). Also confirm inter-instance dependencies (e.g. which app boxes talk to which Redis/DB) so the SG-ref sources are correct.
+| New SG | Inbound rule | Source | Bind on (role → cattle/pet) |
+|---|---|---|---|
+| `tsd-admin` | 22/tcp **+ 2812/tcp (Monit)** | `<ADMIN_CIDR>` (your IP/VPN) — or 0 SSH inbound if SSM is enabled, but **2812 must stay reachable from admin** | **every** instance (LT for cattle, ENI for pets) |
+| `tsd-web-public` | 80, 443/tcp | `0.0.0.0/0` (+ `::/0`) | nginx web pets: `krake_nginx`, `seni_ror_200250915` |
+| `tsd-app` | app backends — dao_protocol 8010, puma 3002, uvicorn 8000, Rails 3000, krake webhook port | `tsd-web-public` + localhost (SG ref / 127.0.0.1) — **not world** | app pets (`dao_protocol_nelanco`, `seni_ror_200250915`) + cattle `krake_ror` (LT), `krake_sk_webhook` (LT) |
+| `tsd-redis` | 6379/tcp | `tsd-app` + `tsd-worker` (SG refs) | Redis pets: `GETDATA_REDIS`, `seni_redis_2`; cattle `GETDATA_CACHE` (LT getdata_cacher) |
+| `tsd-db` | 5432 / 3306 / 9200 (ES?) | `tsd-app` (SG ref) | DB pets: `seni_sql_2026`, `krake_data` (**confirm: Postgres / Elasticsearch?**) |
+| `tsd-worker` | none (egress only; +2812 via `tsd-admin`) | — | worker cattle (LT): `krake_sk`, `krake_sk_scaler`, `krake_sk_crawler`, ASG `seni_sk`; + standalone worker pet `seni_sk_auto` |
+
+**Observed listening ports (live `ss -tlnp`, 2026-06-04 — sample):**
+- `dao_protocol_nelanco`: 22, **2812 (monit, 0.0.0.0)**, 8010 (FastAPI, 0.0.0.0). → 8010 should be `tsd-app` (from Edgar/nginx only), not world.
+- `seni_ror_200250915` (Edgar): 22, **2812 (monit, 0.0.0.0)**, 80/443 (nginx, public), 3002 (puma, 0.0.0.0), 8000 (uvicorn, 0.0.0.0), 5432 (postgres, **127.0.0.1 — already localhost-only ✓**). → 80/443 public; 3002/8000 restrict to localhost/`tsd-app`; Postgres already safe.
+
+**Monit is on `0.0.0.0:2812` on every host** — currently world-reachable through the open default SG. The new SGs **must keep 2812 open to `<ADMIN_CIDR>`** (it's the one-click restart UI) but close it to the world.
+
+**Phase-2 method:** `ss -tlnp` (done above for 2 hosts; repeat per host) **plus** reading each box's config (`/etc/nginx/sites-enabled/*`, systemd unit `ExecStart`, app `.env`) to confirm which ports are real + which bind `0.0.0.0` vs `127.0.0.1`. Anything already on `127.0.0.1` needs no SG opening at all.
 
 ---
 
@@ -97,15 +109,17 @@ Replace the shared, wide-open `default` SG with **role-scoped SGs that reference
   - [ ] Confirm **SSM Session Manager** works on each box (`aws ssm start-session`) so SSH-via-SG is never the only way in. If not, set `ADMIN_CIDR` and keep an out-of-band console path.
   - [ ] Obtain a **write-scoped** IAM key (the scanner keys are read-only): `ec2:CreateSecurityGroup`, `ec2:AuthorizeSecurityGroupIngress/Egress`, `ec2:RevokeSecurityGroupIngress`, `ec2:ModifyInstanceAttribute`, `ec2:ModifyNetworkInterfaceAttribute`.
   - [ ] Save this audit JSON as the pre-change snapshot (rollback reference).
-- [ ] **Phase 1 — Create the new SGs** (additive; zero runtime impact). Per region/account.
-- [ ] **Phase 2 — Confirm actual listening ports** (`ss -tlnp` per instance) → finalize the per-instance SG map in §4.
-- [ ] **Phase 3 — Pilot on ONE low-risk box** (e.g. a `krake_sk*` worker): attach the new SG(s) **alongside** `default`, verify SSH (via SSM/admin) + the service, monitor ~30 min.
-- [ ] **Phase 4 — Attach new SGs across all instances** alongside `default`, by tier: workers → caches → db → app → web. Verify after each.
-- [ ] **Phase 5 — Remove the `default` SG association** per instance once its replacement is verified — one at a time, lowest-risk first. Record the exact re-attach command before each removal.
-- [ ] **Phase 6 — Tighten the now-unused SGs:** revoke the `0.0.0.0/0` ALL rule on `default` (sg-4314630c) + `new default` (sg-0aac0e825c554da19) + `default` (sg-e98f788e); drop world-22 on `launch-wizard-1`; **terminate** the stopped `seni_sk_2026` / `seni_ror_2026` (or re-secure `edgar-2026-05-10`).
+- [ ] **Phase 1 — Create the new SGs** (additive; zero runtime impact). Per region/account. Ensure `tsd-admin` includes **2812 (Monit)** + 22 from `<ADMIN_CIDR>`.
+- [ ] **Phase 2 — Confirm actual ports** per instance: `ss -tlnp` + read configs (`/etc/nginx/sites-enabled`, systemd `ExecStart`, app `.env`). Anything bound `127.0.0.1` needs no SG opening. Finalize the §4 map; resolve `krake_data` engine (Postgres vs Elasticsearch) and whether any ES :9200 exists.
+- [ ] **Phase 3 — Pilot on ONE pet** (lowest-risk, e.g. a standalone worker): attach new SG(s) **alongside** the open SG on its ENI, verify SSH/SSM + **Monit 2812** + the service, monitor ~30 min.
+- [ ] **Phase 4 — Roll out, by attachment type:**
+  - **Pets** → attach role SG on the ENI alongside the open SG; verify; tier order workers → caches → DBs → app → web.
+  - **Cattle** → create a **new launch-template version** with the role SG (drop the open default), update the ASG to it, then **instance refresh** (rolling). Do NOT hand-attach SGs to ASG instances — it's wiped on the next refresh.
+- [ ] **Phase 5 — Remove the open SG.** Pets: detach `default`/`new default` from the ENI once verified (one at a time; record the re-attach command first). Cattle: already dropped by the new LT version after instance refresh.
+- [ ] **Phase 6 — Tighten the now-unused SGs:** revoke the `0.0.0.0/0` ALL rule on `default` (sg-4314630c) + `new default` (sg-0aac0e825c554da19) + `default` (sg-e98f788e); drop world-22 on `launch-wizard-1`; **terminate** the stopped `seni_sk_2026` / `seni_ror_2026` (or re-secure `edgar-2026-05-10`). Confirm **2812 is no longer world-open** anywhere (admin-only).
 - [ ] **Phase 7 — Re-scan** (Cypher-Defense dashboard) to confirm world-open ports → 0 and the score recovers.
 
-**Per-step verification checklist:** (1) SSH/SSM reachable; (2) service health endpoint responds; (3) dependent services still connect (app→redis/db); (4) no new errors in app/CloudWatch logs.
+**Per-step verification checklist:** (1) SSH/SSM reachable; (2) **Monit UI reachable on :2812 from admin**; (3) service health endpoint responds; (4) dependent services still connect (app→redis/db, nginx→puma/uvicorn/dao_protocol); (5) no new errors in app/CloudWatch logs.
 
 **Rollback:** every Phase 5/6 step is a single inverse API call — re-attach the SG (`modify-instance-attribute --groups …`) or re-add the rule (`authorize-security-group-ingress …`). Keep them in a runbook as you go.
 
