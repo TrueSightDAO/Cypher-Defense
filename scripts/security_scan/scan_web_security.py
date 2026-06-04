@@ -57,8 +57,12 @@ def check_tls(hostname, port=443):
             with ctx.wrap_socket(sock, server_hostname=hostname) as ssock:
                 cert = ssock.getpeercert()
                 result["valid"] = True
-                result["issuer"] = dict(cert.get("issuer", []))
-                result["subject"] = dict(cert.get("subject", []))
+                # getpeercert() returns issuer/subject as a tuple of RDNs, each RDN being a
+                # tuple of (key, value) pairs (usually one). dict(cert["issuer"]) raises
+                # "dictionary update sequence element #0 has length 1; 2 is required" because
+                # each top-level element is itself a 1-tuple — flatten one level first.
+                result["issuer"] = dict(item for rdn in cert.get("issuer", ()) for item in rdn)
+                result["subject"] = dict(item for rdn in cert.get("subject", ()) for item in rdn)
                 not_after = cert.get("notAfter")
                 if not_after:
                     expiry = datetime.strptime(not_after, "%b %d %H:%M:%S %Y %Z")
