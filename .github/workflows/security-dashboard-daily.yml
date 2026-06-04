@@ -28,31 +28,18 @@ jobs:
           python -m pip install --upgrade pip
           pip install boto3 python-dotenv requests
 
-      - name: Run AWS inventory scan
+      # compile_security_report.py runs every scanner itself (subprocess), so the
+      # credentials must be on THIS step — the previous separate scan steps wrote
+      # /tmp/*.json that the compiler never read, leaving AWS (no creds) and GitHub
+      # admin data (no PAT) blank. One step, full env.
+      - name: Compile security report
+        id: compile
         env:
           CYPHER_DEFENCE_AWS_KEY: ${{ secrets.CYPHER_DEFENCE_AWS_KEY }}
           CYPHER_DEFENCE_AWS_SECRET: ${{ secrets.CYPHER_DEFENCE_AWS_SECRET }}
           TRUESIGHT_DAO_AUTOPILOT_AWS_KEY: ${{ secrets.TRUESIGHT_DAO_AUTOPILOT_AWS_KEY }}
           TRUESIGHT_DAO_AUTOPILOT_AWS_SECRET: ${{ secrets.TRUESIGHT_DAO_AUTOPILOT_AWS_SECRET }}
-        run: |
-          python scripts/security_scan/scan_aws_inventory.py > /tmp/aws.json || echo "AWS scan failed (non-fatal)"
-
-      - name: Run web security scan
-        run: |
-          python scripts/security_scan/scan_web_security.py > /tmp/web.json || echo "Web scan failed (non-fatal)"
-
-      - name: Run GitHub security scan
-        env:
           GITHUB_TOKEN: ${{ secrets.CYPHER_DEFENCE_OPS_PAT }}
-        run: |
-          python scripts/security_scan/scan_github_security.py > /tmp/github.json || echo "GitHub scan failed (non-fatal)"
-
-      - name: Run phishing blacklist scan
-        run: |
-          python scripts/security_scan/scan_phishing_blacklist.py > /tmp/phishing.json || echo "Phishing scan failed (non-fatal)"
-
-      - name: Compile security report
-        id: compile
         run: |
           python scripts/security_scan/compile_security_report.py > /tmp/security-dashboard.json
           echo "report_size=$(wc -c < /tmp/security-dashboard.json)" >> $GITHUB_OUTPUT
