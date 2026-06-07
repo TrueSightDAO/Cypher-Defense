@@ -1,0 +1,46 @@
+name: Monthly AWS Backup Prune
+
+# Janitor: reclaim AWS backup storage in Nelanco by pruning old AMIs + EBS
+# snapshots that the per-backup-script retention does not cover — legacy
+# monthly data-volume snapshots (snapshot_databases.py, now redundant with the
+# DB AMI), ad-hoc manual AMIs older than 2 years, and orphaned snapshots.
+# See scripts/aws/prune_aws_backups.py for the full policy + safety guards.
+#
+# Runs on the 2nd of the month (AFTER the 1st-of-month AMI backups, so the
+# newest images already exist before anything is pruned).
+#
+# Secrets: CYPHER_DEFENCE_AWS_KEY / CYPHER_DEFENCE_AWS_SECRET (Nelanco).
+
+on:
+  schedule:
+    - cron: "0 6 2 * *"   # 06:00 UTC on the 2nd (after AMI backups on the 1st)
+  workflow_dispatch:
+    inputs:
+      older_than_days:
+        description: "Age cutoff in days for the AMI/snapshot sweep"
+        default: "730"
+      keep_monthly_ebs:
+        description: "Legacy monthly EBS snapshots to keep per codebase"
+        default: "2"
+
+jobs:
+  prune:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install boto3
+
+      - name: Prune old AMIs + snapshots
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.CYPHER_DEFENCE_AWS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CYPHER_DEFENCE_AWS_SECRET }}
+        run: |
+          python3 scripts/aws/prune_aws_backups.py --execute \
+            --older-than-days "${{ github.event.inputs.older_than_days || '730' }}" \
+            --keep-monthly-ebs "${{ github.event.inputs.keep_monthly_ebs || '2' }}"
