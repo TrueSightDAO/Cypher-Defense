@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
 """
+DEPRECATED 2026-06-07 — the scheduled workflow (snapshot_databases.yml) was
+retired. The monthly DB *AMI* backup (snapshot_databases_ami.py /
+snapshot_databases_ami.yml) captures each DB's data volume too, as part of a
+consistent bootable image, so the EBS-only data-volume snapshot here is
+redundant. Kept runnable for ad-hoc manual data-volume snapshots only; not
+scheduled. Storage hygiene for the historical snapshots it created is handled
+by prune_aws_backups.py.
 Create EBS snapshots for the two production database EC2 instances (N. Virginia).
 
 Instance → (codebase, data_volume_id) mapping (update if instances are ever replaced):
