@@ -1,0 +1,38 @@
+name: Weekly Autopilot AMI Backup
+
+# Periodic bootable backup of the truesight_autopilot (Sophia) EC2 instance,
+# for the blue/green disaster-recovery runbook (AWS_DIGITAL_INFRASTRUCTURE.md
+# §4.5). NoReboot — never interrupts the running service. Retains the newest 8
+# AMIs (~2 months) and prunes older ones + their snapshots.
+#
+# Secrets (account 767697632458, which OWNS the autopilot instance):
+#   TRUESIGHT_DAO_AUTOPILOT_AWS_KEY / TRUESIGHT_DAO_AUTOPILOT_AWS_SECRET
+
+on:
+  schedule:
+    - cron: "0 3 * * 0"   # 03:00 UTC every Sunday
+  workflow_dispatch:
+    inputs:
+      retain:
+        description: "How many AMIs to keep"
+        default: "8"
+
+jobs:
+  ami-backup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install boto3
+
+      - name: Create autopilot AMI + prune old ones
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.TRUESIGHT_DAO_AUTOPILOT_AWS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.TRUESIGHT_DAO_AUTOPILOT_AWS_SECRET }}
+        run: |
+          python3 scripts/aws/snapshot_autopilot_ami.py --execute --retain "${{ github.event.inputs.retain || '8' }}"
