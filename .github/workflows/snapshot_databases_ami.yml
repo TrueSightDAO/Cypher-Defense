@@ -1,0 +1,44 @@
+name: Monthly Database AMI Backup
+
+# Full bootable AMI backups of the two production DB EC2 instances in Nelanco
+# (seni_sql = Edgar/seni_ror PostgreSQL, krake_data = krake_ror data/DB). An AMI
+# captures the OS root + ALL attached volumes (incl. the external data disk) as
+# one consistent bootable image — the DR-restore path. Complements the
+# data-volume-only EBS snapshots in snapshot_databases.yml.
+#
+# NoReboot — never interrupts a live database (crash-consistent; PostgreSQL
+# recovers via WAL). Retains the newest 6 AMIs per instance and prunes older
+# ones + their snapshots.
+#
+# Secrets (Nelanco account 767697632458, which owns the instances):
+#   CYPHER_DEFENCE_AWS_KEY / CYPHER_DEFENCE_AWS_SECRET  (already set — same as
+#   snapshot_databases.yml)
+
+on:
+  schedule:
+    - cron: "0 4 1 * *"   # 04:00 UTC on the 1st (offset from the 02:00 EBS snapshot)
+  workflow_dispatch:
+    inputs:
+      retain:
+        description: "How many AMIs to keep per instance"
+        default: "6"
+
+jobs:
+  db-ami-backup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install boto3
+
+      - name: Create database AMIs + prune old ones
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.CYPHER_DEFENCE_AWS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CYPHER_DEFENCE_AWS_SECRET }}
+        run: |
+          python3 scripts/aws/snapshot_databases_ami.py --execute --retain "${{ github.event.inputs.retain || '6' }}"
