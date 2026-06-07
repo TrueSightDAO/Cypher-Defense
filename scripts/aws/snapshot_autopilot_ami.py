@@ -163,7 +163,8 @@ def main() -> int:
         return 1
     instance_id = inst["InstanceId"]
     name = f"{INSTANCE_NAME_TAG}_{date_str}"
-    desc = f"Automated backup of {instance_id} ({inst.get('InstanceType')}) — {MANAGED_BY}"
+    # AWS CreateImage Description rejects non-ASCII — keep it plain ASCII.
+    desc = f"Automated backup of {instance_id} ({inst.get('InstanceType')}) - {MANAGED_BY}"
 
     print(f"instance: {instance_id} ({inst.get('InstanceType')}, state={inst['State']['Name']})")
     if not args.execute:
