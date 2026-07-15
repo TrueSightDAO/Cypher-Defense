@@ -5,8 +5,11 @@ name: Weekly Autopilot AMI Backup
 # §4.5). NoReboot — never interrupts the running service. Retains the newest 8
 # AMIs (~2 months) and prunes older ones + their snapshots.
 #
-# Secrets (account 767697632458, which OWNS the autopilot instance):
-#   TRUESIGHT_DAO_AUTOPILOT_AWS_KEY / TRUESIGHT_DAO_AUTOPILOT_AWS_SECRET
+# Secrets: CYPHER_DEFENCE_AWS_KEY / CYPHER_DEFENCE_AWS_SECRET — these authenticate
+# to the Nelanco account 767697632458, which now OWNS the autopilot instance after
+# the 2026-07-15 Explorya->Nelanco migration (box tag: sophia-nelanco).
+# (Old TRUESIGHT_DAO_AUTOPILOT_AWS_* secrets are the Explorya account 440626669078,
+#  which held the retired box — do NOT use them here anymore.)
 
 on:
   schedule:
@@ -32,7 +35,7 @@ jobs:
 
       - name: Create autopilot AMI + prune old ones
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.TRUESIGHT_DAO_AUTOPILOT_AWS_KEY }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.TRUESIGHT_DAO_AUTOPILOT_AWS_SECRET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.CYPHER_DEFENCE_AWS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CYPHER_DEFENCE_AWS_SECRET }}
         run: |
           python3 scripts/aws/snapshot_autopilot_ami.py --execute --retain "${{ github.event.inputs.retain || '8' }}"
