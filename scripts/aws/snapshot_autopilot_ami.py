@@ -46,7 +46,7 @@ except ImportError:
     raise SystemExit(1)
 
 REGION = "us-east-1"
-INSTANCE_NAME_TAG = "truesight-autopilot"
+INSTANCE_NAME_TAG = "sophia-nelanco"  # box moved Explorya->Nelanco 2026-07-15; resolved via CYPHER_DEFENCE_AWS_* (Nelanco 767697632458)
 MANAGED_BY = "snapshot_autopilot_ami"
 DEFAULT_RETAIN = 8  # weekly cadence → ~2 months of restore points
 
