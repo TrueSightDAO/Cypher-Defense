@@ -7,12 +7,8 @@ security-dashboard.json with an overall security score (0-100).
 
 Usage:
   python3 scripts/security_scan/compile_security_report.py
-  python3 scripts/security_scan/compile_security_report.py --publish
 
-With --publish, writes the output to:
-  ../treasury-cache/managed-ledgers/security-dashboard.json
-
-Or set OUTPUT_DIR env var to a custom path.
+Outputs JSON to stdout. Log messages go to stderr.
 """
 
 import json
@@ -21,12 +17,13 @@ import subprocess
 import sys
 from datetime import datetime, timezone
 
-SCANNERS = [
-    "scan_aws_inventory.py",
-    "scan_web_security.py",
-    "scan_github_security.py",
-    "scan_phishing_blacklist.py",
-]
+# Map scanner filename → output key expected by the dashboard JS
+SCANNERS = {
+    "aws": "scan_aws_inventory.py",
+    "web": "scan_web_security.py",
+    "github": "scan_github_security.py",
+    "phishing_blacklist": "scan_phishing_blacklist.py",
+}
 
 
 def run_scanner(name):
@@ -149,30 +146,13 @@ def main():
         "version": "1.0.0",
     }
 
-    for scanner in SCANNERS:
-        name = scanner.replace("scan_", "").replace(".py", "")
-        print(f"  Running {scanner}...", file=sys.stderr)
-        data[name] = run_scanner(scanner)
+    for key, filename in SCANNERS.items():
+        print(f"  Running {filename}...", file=sys.stderr)
+        data[key] = run_scanner(filename)
 
     data["score"] = calculate_score(data)
 
-    output = json.dumps(data, indent=2, default=str)
-
-    publish = "--publish" in sys.argv
-    output_dir = os.getenv("OUTPUT_DIR")
-
-    if publish or output_dir:
-        if output_dir:
-            out_path = os.path.join(output_dir, "security-dashboard.json")
-        else:
-            repo_root = os.path.join(os.path.dirname(__file__), "..", "..")
-            out_path = os.path.join(repo_root, "..", "treasury-cache", "managed-ledgers", "security-dashboard.json")
-        os.makedirs(os.path.dirname(out_path), exist_ok=True)
-        with open(out_path, "w") as f:
-            f.write(output)
-        print(f"Published to {out_path}", file=sys.stderr)
-    else:
-        print(output)
+    print(json.dumps(data, indent=2, default=str))
 
 
 if __name__ == "__main__":
