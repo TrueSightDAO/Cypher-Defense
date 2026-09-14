@@ -1,0 +1,43 @@
+name: Weekly nelanco-claude AMI Backup
+
+# Periodic bootable backup of the nelanco-claude (interactive Claude Code
+# jump-box) EC2 instance -- same blue/green DR pattern as the autopilot's
+# weekly AMI backup (snapshot_autopilot_ami.yml), for a box that has no other
+# backup path for its hand-laid-down creds/fleet-SSH-key/Telegram-bot state.
+# See agentic_ai_context/AWS_DIGITAL_INFRASTRUCTURE.md (nelanco-claude entry)
+# and agentic_ai_context/plans/NELANCO_CLAUDE_CODE_BOX_PLAN.md Gate C.
+# NoReboot -- never interrupts an active Gary-driven session. Retains the
+# newest 8 AMIs (~2 months) and prunes older ones + their snapshots.
+#
+# Secrets: CYPHER_DEFENCE_AWS_KEY / CYPHER_DEFENCE_AWS_SECRET -- these
+# authenticate to the Nelanco account 767697632458, which owns this instance
+# (box tag: nelanco-claude-code). Same secrets the autopilot backup uses.
+
+on:
+  schedule:
+    - cron: "0 4 * * 0"   # 04:00 UTC every Sunday (1h after the autopilot backup)
+  workflow_dispatch:
+    inputs:
+      retain:
+        description: "How many AMIs to keep"
+        default: "8"
+
+jobs:
+  ami-backup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install boto3
+
+      - name: Create nelanco-claude AMI + prune old ones
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.CYPHER_DEFENCE_AWS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CYPHER_DEFENCE_AWS_SECRET }}
+        run: |
+          python3 scripts/aws/snapshot_nelanco_claude_ami.py --execute --retain "${{ github.event.inputs.retain || '8' }}"
